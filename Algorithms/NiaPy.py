@@ -1,5 +1,7 @@
 from Algorithms import Algorithm
 from utils import *
+import logging
+logger = logging.getLogger('Algorithms')
 
 from NiaPy.algorithms.basic import GreyWolfOptimizer
 from NiaPy.algorithms.other import NelderMeadMethod
@@ -55,17 +57,23 @@ class NiaPy(Algorithm):
         Changes between algorithms
 
         """
-        obj_space = self.objective.functionProperties['searchSpace']
-        self.x0 = self.objective.functionProperties['x0']
-        obj_space_type = self.objective.functionProperties['spaceType']
-        lower = []
-        higher = []
-        for v in obj_space:
-            lower.append(v[0])
-            higher.append(v[1])
+        try:
+            obj_space = self.objective.functionProperties['searchSpace']
+            self.x0 = self.objective.functionProperties['x0']
+            obj_space_type = self.objective.functionProperties['spaceType']
+            lower = []
+            higher = []
+            for v in obj_space:
+                lower.append(v[0])
+                higher.append(v[1])
 
-        self.lowerBound = min(lower)
-        self.higherBound = max(higher)
+            self.lowerBound = min(lower)
+            self.higherBound = max(higher)
+        except:
+            logger.error('Error assembling the space for ' + str(self.algorithm_name) + ' with cost function: ' + str(
+                self.objective.GetCostFunctionName()))
+            #since it will fail later in the optimize function we pass here
+            pass
 
 
 
@@ -78,36 +86,38 @@ class NiaPy(Algorithm):
 
         THe instance to be optimized is the self.objective value
         """
-        class MyBenchmark(Benchmark):
-            def __init__(self,benchmark_objective, Lower=self.lowerBound, Upper=self.higherBound):
-                self.benchmark_objective = benchmark_objective
-                Benchmark.__init__(self, Lower, Upper)
-            def function(self):
-                bench = self.benchmark_objective
-                def evaluate(D,sol):
-                    val = bench(sol)
-                    return val
-                return evaluate
+        try:
+            class MyBenchmark(Benchmark):
+                def __init__(self,benchmark_objective, Lower=self.lowerBound, Upper=self.higherBound):
+                    self.benchmark_objective = benchmark_objective
+                    Benchmark.__init__(self, Lower, Upper)
+                def function(self):
+                    bench = self.benchmark_objective
+                    def evaluate(D,sol):
+                        val = bench(sol)
+                        return val
+                    return evaluate
 
 
-        # run the random search algorithm
-        task = StoppingTask(D=len(self.x0),
-                            nFES=self.maxfeval,
-                            benchmark=MyBenchmark(benchmark_objective=self.objective,
-                                                  Lower=self.lowerBound,
-                                                  Upper=self.higherBound)
-                            )
-        best = self.algo.run(task)
-        #Some classes in the NiaPy return different formats for the best result
-        xopt = []
-        if type(best[0]) == None:
-            xopt=self.x0
-        else:
+            # run the random search algorithm
+            task = StoppingTask(D=len(self.x0),
+                                nFES=self.maxfeval,
+                                benchmark=MyBenchmark(benchmark_objective=self.objective,
+                                                      Lower=self.lowerBound,
+                                                      Upper=self.higherBound)
+                                )
+            best = self.algo.run(task)
+            #Some classes in the NiaPy return different formats for the best result
+            xopt = []
             for xi in best[0]:
                xopt.append(xi)
-        best_arm = convertToArray(xopt)
-        # print('best_arm: ', best_arm, ' best0: ', best[0])
-        return best_arm
+            success = True
+            best_arm = convertToArray(xopt)
+        except:
+            logger.warning('Optimization for ' + str(self.algorithm_name) + ' failed.')
+            best_arm = NAN
+            success = False
+        return best_arm, success
 
 
 class NiaPyGWO(NiaPy):

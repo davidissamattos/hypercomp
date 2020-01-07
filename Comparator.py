@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import logging
-from timeit import default_timer as timer
 logger = logging.getLogger(__name__)
 import os, re, shutil, importlib
+from tqdm import tqdm
 
 #GoogleCloud bucket
 from google.cloud import storage
@@ -19,7 +19,8 @@ class Comparator():
     To extend we implement a new function that loops thorugh the number of iterations and give the output result
     This result must be saved and appended in the results vector
     """
-    def __init__(self, objFuncClass,
+    def __init__(self,
+                 objFuncClass,
                  results_folder,
                  filename,
                  sd,
@@ -27,7 +28,9 @@ class Comparator():
                  maxfevalBydimensions=False, #IF this is TRUE we multiply maxfeval by the dimensions to obtain the new number of maximum function evaluations
                  nsim=1,
                  useGCP=False,
-                 GCPbucketName=None):
+                 GCPbucketName=None,
+                 timeout_min=15):
+
         self.objFuncClass = objFuncClass
         #standard deviation
         self.sd=sd
@@ -41,9 +44,16 @@ class Comparator():
         self.filename = filename
         self.useGCP=useGCP
 
+        if timeout_min > 0:
+            self.timeout = int(timeout_min * 60)
+        else:
+            self.timeout = int(15 * 60)
+        logger.info('Using a timeout of '+ str(self.timeout)+ ' seconds per algorithm')
+
         if self.useGCP:
             if GCPbucketName==None:
-                raise Exception('You need to set a GCP bucket name')
+                logger.error('You need to set a GCP bucket name')
+                raise Exception
             else:
                 self.GCPbucketName = GCPbucketName
                 self.GCPbucketFolderName = results_folder
@@ -57,7 +67,9 @@ class Comparator():
         Run all algorithms for nsim times then rank and save them
         :return:
         """
-        for i in range(self.nsim):
+        #tqdm is just to create a progress bar
+        for i in tqdm(range(self.nsim), desc='NSim'):
+            logger.info('Running all the algorithms for simulation number ' + str(i) + ' and cost function '+ str(self.objFuncClass))
             #dinamically importing the algorithm classes from Algorithms
             for algname in all_algorithms:
                 module = importlib.import_module('Algorithms')
@@ -65,14 +77,17 @@ class Comparator():
                 result = self.run_algorithm(cl)
                 result['simNumber'] = i
                 self.results.append(result)
+
         #After all iterations we rank them by simulation number
         df = pd.DataFrame(self.results)
-        # Rank by true distance
-        df['RankTrueRewardDifference'] = df.groupby('simNumber')['TrueRewardDifference'].rank(method='average', ascending=True)
-        # Rank the regret
-        df['RankCumulativeRegret'] = df.groupby('simNumber')['CumulativeRegret'].rank(method='average', ascending=True)
-        # rank the euclidean distance
-        df['RankEuclideanDistance'] = df.groupby('simNumber')['EuclideanDistance'].rank(method='average', ascending=True)
+
+        #I will leave the ranking to the analysis
+        # # Rank by true distance
+        # df['RankTrueRewardDifference'] = df.groupby('simNumber')['TrueRewardDifference'].rank(method='average', ascending=True, na_option='bottom')
+        # # Rank the regret
+        # df['RankCumulativeRegret'] = df.groupby('simNumber')['CumulativeRegret'].rank(method='average', ascending=True, na_option='bottom')
+        # # rank the euclidean distance
+        # df['RankEuclideanDistance'] = df.groupby('simNumber')['EuclideanDistance'].rank(method='average', ascending=True, na_option='bottom')
 
         #saving results depending if it is google cloud or not
         self.saveResults(df)
@@ -96,7 +111,8 @@ class Comparator():
                                       maxfeval=self.maxfeval)
         algo = algoClass(objective=objective,
                          maxfeval=self.maxfeval)
-        result = algo.run()
+
+        result = algo.run(timeout=self.timeout)
         return result
 
     def cleanUp(self):
@@ -113,6 +129,7 @@ class Comparator():
         purge(os.getcwd(), 'smac3-output*')
         purge(os.getcwd(), 'outcmaes*')
         purge(os.getcwd(), 'temp')
+        logger.info('All temporary files were deleted')
 
     def saveResults(self, df):
         """

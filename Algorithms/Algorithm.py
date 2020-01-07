@@ -1,18 +1,10 @@
 import numpy as np
-import pandas as pd
 import logging
 from timeit import default_timer as timer
-logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
-import os, re, shutil
 from abc import ABC, abstractmethod
+from multiprocessing import Process, Queue
 
-#GoogleCloud bucket
-from google.cloud import storage
-# say where your private key to google cloud exists
-
-from CostFunctions import *
-from utils import *
 
 class Algorithm(ABC):
         """
@@ -30,21 +22,46 @@ class Algorithm(ABC):
             self.results = []
             self.algorithm_name= algorithm_name
 
-        def run(self):
+
+        def run(self,timeout):
             """
             Optimize the algorithm
             """
-            print('Starting to run algorithm: ', str(self.algorithm_name))
+
             self.assemblespace()
             start = timer()
-            best_arm = self.optimize()
+            best_arm, success = self.optimizeInSeparateProcess(timeout=timeout)
             end = timer()
             timetocomplete = end - start
             result = self.objective.GenerateInfo(best_arm=best_arm,
-                                                 timetocomplete = timetocomplete,
-                                                 algorithm_name=self.algorithm_name)
+                                                 timetocomplete=timetocomplete,
+                                                 algorithm_name=self.algorithm_name,
+                                                 success=success)
             return result
 
+        def optimizeProcess(self, queue):
+            best_arm, success = self.optimize()
+            queue.put((best_arm,success))
+
+        def optimizeInSeparateProcess(self, timeout):
+            queue = Queue()
+            p = Process(target=self.optimizeProcess, args=(queue,))
+            try:
+                p.start()
+                p.join(timeout)  # this blocks until the process terminates
+                best_arm, success = queue.get()
+                if success:
+                    logger.info('Algorithm '+ str(self.algorithm_name) +' terminated succesfully')
+                else:
+                    logger.info('Algorithm ' + str(self.algorithm_name) + ' failed to give a result')
+                return best_arm, success
+            except:
+                print('Process failed')
+                exitcode = p.exitcode
+                logger.critical('Error with the optimization process thread in ' + str(self.algorithm_name) + ' with cost function '+ str(self.objective.GetCostFunctionName()))
+                logger.critical('Process terminated with exit code ' + str(exitcode))
+                best_arm, success = np.nan, False
+                return best_arm, success
 
         @abstractmethod
         def optimize(self):

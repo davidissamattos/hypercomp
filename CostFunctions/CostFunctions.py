@@ -2,15 +2,13 @@ import numpy as np
 from scipy import spatial
 from abc import ABC, abstractmethod
 from utils import *
-import copy
-from ConfigSpace.configuration_space import Configuration
-
+import logging
+logger = logging.getLogger(__name__)
 __all__ = ['CostFunctions']
 
 
 class CostFunctions(ABC):
     def __init__(self, functionProperties, sd=1, maxfeval=10, tol=0.001):
-        # print('Cost function instantiated')
         # Saving parameters
         self._maxfevals = maxfeval
         self.sd = sd
@@ -39,12 +37,14 @@ class CostFunctions(ABC):
         pass
 
     def eval(self, x):
-        self.requestedArms.append(x)
-        nonoise = self.func(x)
-        value = np.random.normal(loc=nonoise, scale=self.sd, size=1)[0]
-        self.outputValues.append(value)
-        # print('x: ', x, ' value ', value)
-        return value
+        try:
+            self.requestedArms.append(x)
+            nonoise = self.func(x)
+            value = np.random.normal(loc=nonoise, scale=self.sd, size=1)[0]
+            self.outputValues.append(value)
+            return value
+        except:
+            raise ValueError
 
     # At each call we verify if the number of iterations has passed or not
     def __call__(self, x):
@@ -53,15 +53,16 @@ class CostFunctions(ABC):
         When we call the function/pass this function as a parameter it will call this
         Here we verify that it hasnt gone over the maximum iterations, as some algorithms ignore that
         """
-        xx = convertToArray(x)
-
-        # Verify maximum number of evaluations
-        if self._nfeval > self._maxfevals:
-            print('Max iterations were achieved')
-            # raise ValueError("Max iterations allowed is over")
-        self._nfeval = 1 + self._nfeval
-        # print('nfeval: ', self._nfeval)
-        return self.eval(xx)
+        try:
+            xx = convertToArray(x)
+            # Verify maximum number of evaluations
+            if self._nfeval > self._maxfevals:
+                logger.debug('Max iterations were achieved')
+                # raise ValueError("Max iterations allowed is over")
+            self._nfeval = 1 + self._nfeval
+            return self.eval(xx)
+        except:
+            raise ValueError
 
     # From this point we verify all the metrics that we want to investigate
     def GetRegret(self):
@@ -83,56 +84,83 @@ class CostFunctions(ABC):
         """
         This is the cumulative regret at the end of the optimization
         """
-        regret = self.GetRegret()
-        return np.sum(regret)
+        try:
+            regret = self.GetRegret()
+            cumregret = np.sum(regret)
+        except:
+            logger.warning('Error calculating cummulative regret: ' + str(self.GetCostFunctionName()))
+            cumregret = NAN
+            pass
+        return cumregret
 
     def GetEuclideanDistance(self, best_arm):
         """
         In this function we compute the euclidean distances between the best_arm found in the algorithm and 
         the known optimal arms. We return the shortest distance between then
         """
-        dist = []
-        for arm in self.optimalArms:
-            d = spatial.distance.euclidean(arm, best_arm)
-            dist.append(d)
-            # print('Best arm: ', best_arm, ' Optimal arm: ', arm, ' Distance: ', d)
-        smallestdist = np.min(dist)
+        try:
+            dist = []
+            for arm in self.optimalArms:
+                d = spatial.distance.euclidean(arm, best_arm)
+                dist.append(d)
+                logger.debug('Best arm: ' + str(best_arm) + ' Optimal arm: ' + str(arm) + ' Distance: ' + str(d))
+            smallestdist = np.min(dist)
+        except:
+            logger.warning('Error calculating euclidean distance for: ' + str(self.GetCostFunctionName()))
+            smallestdist = NAN
         return smallestdist
 
     def GetTrueRewardDifference(self, best_arm):
         """
         
         """
-        reward_diff = abs(self.minimumValue - self.func(best_arm))
-        # print('real min: ',self.minimumValue, ' obtainded value: ', self.func(best_arm))
+        try:
+            reward_diff = np.abs(self.minimumValue - self.func(best_arm))
+            logger.debug('Real min: ' + str(self.minimumValue) + ' obtainded value: ' + str(self.func(best_arm)))
+            if type(reward_diff) is np.ndarray:
+                reward_diff=np.float64(reward_diff)
+        except:
+            logger.warning('Error calculating reward for: ' + str(self.GetCostFunctionName()))
+            reward_diff = NAN
+
         return reward_diff
 
     def GetCostFunctionName(self):
         """
         
         """
-        return self.__class__.__name__
+        return str(self.__class__.__name__)
 
-    def GenerateInfo(self, best_arm, timetocomplete, algorithm_name):
+    def GenerateInfo(self, best_arm, timetocomplete, algorithm_name, success=True):
         """
         In this function we create a dictionary logging all the interesting things we want from this experimental run
         """
-        info = {
-            'BestArm': best_arm,
-            'NumberFunctionEval': self._nfeval,
-            'Algorithm': algorithm_name,
-            'CostFunction': self.GetCostFunctionName(),
-            'EuclideanDistance': self.GetEuclideanDistance(best_arm),
-            'TrueRewardDifference': self.GetTrueRewardDifference(best_arm),
-            'CumulativeRegret': self.GetCumulativeRegretFinal(),
-            'TimeToComplete': timetocomplete,
-            'Continuous': self.functionProperties['Continuous'],
-            'Differentiability': self.functionProperties['Differentiability'],
-            'Separability': self.functionProperties['Separability'],
-            'Scalability': self.functionProperties['Scalability'],
-            'Modality': self.functionProperties['Modality'],
-            'Ndimensions': self.functionProperties['Ndimensions']
-        }
+        algorithm_name = str(algorithm_name)
+        try:
+            info = {
+                'BestArm': best_arm,
+                'NumberFunctionEval': self._nfeval,
+                'Algorithm': algorithm_name,
+                'CostFunction': self.GetCostFunctionName(),
+                'EuclideanDistance': self.GetEuclideanDistance(best_arm),
+                'TrueRewardDifference': self.GetTrueRewardDifference(best_arm),
+                'CumulativeRegret': self.GetCumulativeRegretFinal(),
+                'TimeToComplete': timetocomplete,
+                'Continuous': self.functionProperties['Continuous'],
+                'Differentiability': self.functionProperties['Differentiability'],
+                'Separability': self.functionProperties['Separability'],
+                'Scalability': self.functionProperties['Scalability'],
+                'Modality': self.functionProperties['Modality'],
+                'Ndimensions': self.functionProperties['Ndimensions'],
+                'OptimizationSuccessful': success
+            }
+            logger.info('Results for ' + str(algorithm_name) + ' with cost function ' + str(
+                self.GetCostFunctionName()) + ' were succesfully created')
+        except Exception as e:
+            logger.error(e)
+            logger.error('Failed to generate results for ' + str(algorithm_name) + ' with cost function ' + str(
+                self.GetCostFunctionName()))
+            raise RuntimeError
         return info
 
 

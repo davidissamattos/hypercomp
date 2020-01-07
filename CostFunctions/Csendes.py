@@ -50,6 +50,8 @@ class Csendes(CostFunctions):
     def func(self, x):
         value = 0
         for i in range(self.N):
+            if x[i] == 0.0:
+                x[i] = x[i] - 0.0001
             value = value + np.power(x[i],6)*(2+ np.sin(1/x[i]))
         return value
 

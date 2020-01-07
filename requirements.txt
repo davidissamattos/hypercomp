@@ -12,3 +12,5 @@ lightgbm
 NiaPy==2.0.0rc5
 click
 google-cloud-storage
+tqdm
+colorlog

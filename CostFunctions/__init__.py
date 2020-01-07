@@ -69,7 +69,12 @@ from CostFunctions.Hartman3 import Hartman3
 from CostFunctions.Hartman6 import Hartman6
 from CostFunctions.HelicalValley import HelicalValley
 from CostFunctions.Cola import Cola
-
+from CostFunctions.Himmelblau import Himmelblau
+from CostFunctions.Hosaki import Hosaki
+from CostFunctions.JennrichSampson import JennrichSampson
+from CostFunctions.Langerman import Langerman
+from CostFunctions.Keane import Keane
+from CostFunctions.Leon import Leon
 
 all_benchmarks = [
     # 'simpleQuadratic',
@@ -137,8 +142,13 @@ all_benchmarks = [
     'Hartman3',
     'Hartman6',
     'HelicalValley',
-    'Cola'
-
+    'Cola',
+    'Himmelblau',
+    'Hosaki',
+    'JennrichSampson',
+    'Langerman',
+    'Keane',
+    'Leon'
     ]
 
 all_variables = copy.copy(all_benchmarks)

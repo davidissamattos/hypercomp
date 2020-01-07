@@ -1,6 +1,7 @@
 import numpy as np
 from ConfigSpace.configuration_space import Configuration
 
+NAN = np.float64(np.nan)
 
 #helper functions
 def isArray(x):

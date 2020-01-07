@@ -1,31 +1,42 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 import logging
+import colorlog
+handler = logging.StreamHandler()
+LOG_LEVEL = logging.DEBUG
+LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
+handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
+
+
+#Specifying which files I want with log levels
+logger = logging.getLogger(__name__)
+algorithm_logger = logging.getLogger('Algorithm')
+costfunctions_logger = logging.getLogger('CostFunctions')
+comparator_logger = logging.getLogger('Comparator')
+
+#handlers
+logger.addHandler(handler)
+algorithm_logger.addHandler(handler)
+costfunctions_logger.addHandler(handler)
+comparator_logger.addHandler(handler)
+
+#levels per file
+logger.setLevel(LOG_LEVEL)
+algorithm_logger.setLevel(LOG_LEVEL)
+costfunctions_logger.setLevel(LOG_LEVEL)
+comparator_logger.setLevel(LOG_LEVEL)
+
+#removing progagation from loggers
+logger.propagate = False
+algorithm_logger.propagate = False
+costfunctions_logger.propagate = False
+comparator_logger.propagate = False
+
+
 
 from CostFunctions import *
-from hyperopt import fmin, tpe, hp, rand
+
 
 from Comparator import *
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'gcpcredentials.json'
-
-import GPy
-import GPyOpt
-from GPyOpt.methods import BayesianOptimization
-from GPyOpt.experiment_design import initial_design
-
-
-import cma
-
-from smac.facade.func_facade import fmin_smac
-
-from NiaPy.algorithms.basic import GreyWolfOptimizer
-from NiaPy.task import StoppingTask
-from NiaPy.benchmarks import Sphere
-
-msg = "Starting message"
-import importlib
-from CostFunctions import all_benchmarks as bm
 
 
 if __name__ == '__main__':
@@ -43,22 +54,28 @@ if __name__ == '__main__':
     #                      maxfeval=10,
     #                      nsim=1,
     #                  useGCP=True,
-    #                  GCPbucketName='hypercomp-experiment-data')
+    #                  GCPbucketName='hypercomp-experiment-data')DeVilliersGlasser01
     sim = Comparator(objFuncClass=Easom,
                          results_folder='data',
                          filename ='test.csv',
                          sd=sd,
                          maxfeval=maxfeval,
-                         nsim=nsim)
+                         nsim=nsim,
+                         timeout_min=15)
 
-    # sim.run()
-
+    sim.run()
+    # logger.info('My info')
+    # logger.debug('My debug')
+    # logger.warning('My warning')
+    # logger.critical('My critical')
 
     from Algorithms.SMAC import SMAC
-    from Algorithms.Hyperopt import RandomSearch
+    from Algorithms.HpbandsterAlgorithms import hpbandsterHyperBand, hpbandsterBOHB
+    # from Algorithms.Hyperopt import RandomSearch
 
-    # sim.run_algorithm(RandomSearch)
-    sim.run_algorithm(SMAC)
+    # sim.run_algorithm(hpbandsterHyperBand)
+    # sim.run_algorithm(hpbandsterBOHB)
+    # sim.run_algorithm(SMAC)
 
 
     # from Algorithms.NiaPy import NiaPyABC

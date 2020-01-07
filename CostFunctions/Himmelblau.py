@@ -1,26 +1,27 @@
 """
-Implementation of the FreudensteinRoth.py function
+Implementation of the Himmelblau.py function
 
-# Created by davidis at 2019-11-22
+# Created by davidis at 2020-01-07
 """
 
 from CostFunctions import CostFunctions
 import numpy as np
 
-__all__ = ['FreudensteinRoth']
+__all__ = ['Himmelblau']
 
 
-class FreudensteinRoth(CostFunctions):
+class Himmelblau(CostFunctions):
     """
-    Implementation of the FreudensteinRoth.py function from 
+    Implementation of the Himmelblau.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
     """
     functionProperties = {
         'minimumValue': 0,
-        'optimalArms': [[5, 4]],
-        'searchSpace': [[-10, 10], [-10, 10]],
+        'optimalArms': [[3, 2]], #Jamil
+        #'optimalArms': [[0, 0]], #ampgo
+        'searchSpace': [[-5, 5], [-5, 5]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-10, 10), np.random.uniform(-10, 10)],
+        'x0': [np.random.uniform(-5, 5), np.random.uniform(-5, 5)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -37,5 +38,5 @@ class FreudensteinRoth(CostFunctions):
         """
         x1 = x[0]
         x2 = x[1]
-        value = np.power(x1-13 + ((5-x2)*x2 -2)*x2 ,2) + np.power(x1-29+ ((x2+1)*x2-14)*x2,2)
+        value =  np.power(x1 * x1 + x2 - 11, 2) + np.power(x1 + x2 * x2 - 7, 2)
         return value

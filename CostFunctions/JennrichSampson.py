@@ -1,26 +1,26 @@
 """
-Implementation of the FreudensteinRoth.py function
+Implementation of the JennrichSampson.py function
 
-# Created by davidis at 2019-11-22
+# Created by davidis at 2020-01-07
 """
 
 from CostFunctions import CostFunctions
 import numpy as np
 
-__all__ = ['FreudensteinRoth']
+__all__ = ['JennrichSampson']
 
 
-class FreudensteinRoth(CostFunctions):
+class JennrichSampson(CostFunctions):
     """
-    Implementation of the FreudensteinRoth.py function from 
+    Implementation of the JennrichSampson.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
     """
     functionProperties = {
-        'minimumValue': 0,
-        'optimalArms': [[5, 4]],
-        'searchSpace': [[-10, 10], [-10, 10]],
+        'minimumValue': 124.3621824,
+        'optimalArms': [[0.257825, 0.257825]],
+        'searchSpace': [[-1, 1], [-1, 1]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-10, 10), np.random.uniform(-10, 10)],
+        'x0': [np.random.uniform(-1, 1), np.random.uniform(-1, 1)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -37,5 +37,6 @@ class FreudensteinRoth(CostFunctions):
         """
         x1 = x[0]
         x2 = x[1]
-        value = np.power(x1-13 + ((5-x2)*x2 -2)*x2 ,2) + np.power(x1-29+ ((x2+1)*x2-14)*x2,2)
+        rng = np.arange(1.0, 11.0) #from 1 to 10 list
+        value = np.sum(np.power(2 + 2*rng -(np.exp(rng*x1)+np.exp(rng*x2)),2))
         return value

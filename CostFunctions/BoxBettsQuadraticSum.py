@@ -21,7 +21,7 @@ class BoxBettsQuadraticSum(CostFunctions):
         'optimalArms': [[1, 10, 1]],
         'searchSpace': [[0.9, 1.2], [9, 11.2], [0.9, 1.2]],
         'spaceType': ['uniform', 'uniform', 'uniform'],
-        'x0': [np.random.uniform(0.9, 1.2), np.random.uniform(-1, 1), np.random.uniform(0.9, 1.2)],
+        'x0': [np.random.uniform(0.9, 1.2), np.random.uniform(9, 11.2), np.random.uniform(0.9, 1.2)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
