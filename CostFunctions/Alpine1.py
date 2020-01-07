@@ -7,9 +7,9 @@ class Alpine1(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 0,
-        'searchSpace_SingleDimension': [-10, 10],
+        'searchSpace_SingleDimension': [-5, 10],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-10,10),
+        'x0_SingleDimension': np.random.uniform(-5,10),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

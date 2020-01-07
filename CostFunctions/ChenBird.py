@@ -18,9 +18,9 @@ class ChenBird(CostFunctions):
     functionProperties = {
         'minimumValue': -2000.003999984000,
         'optimalArms': [[0.5, 0.5]],
-        'searchSpace': [[-500, 500], [-500, 500]],
+        'searchSpace': [[-500, 300], [-300, 500]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-500, 500), np.random.uniform(-500, 500)],
+        'x0': [np.random.uniform(-500, 300), np.random.uniform(-300, 500)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

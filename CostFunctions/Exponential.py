@@ -19,9 +19,9 @@ class Exponential(CostFunctions):
     functionProperties = {
         'minimumValue': -1,
         'optimalArms_SingleDimension': 0,
-        'searchSpace_SingleDimension': [-1, 1],
+        'searchSpace_SingleDimension': [-1, 0.5],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-1, 1),
+        'x0_SingleDimension': np.random.uniform(-1, 0.5),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

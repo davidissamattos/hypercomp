@@ -18,9 +18,9 @@ class Csendes(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 0.000001,
-        'searchSpace_SingleDimension': [-1, 1],
+        'searchSpace_SingleDimension': [-1, 0.5],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-1, 1),
+        'x0_SingleDimension': np.random.uniform(-1, 0.5),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Separable',

@@ -19,9 +19,9 @@ class ChungReynolds(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 0,
-        'searchSpace_SingleDimension': [-100, 100],
+        'searchSpace_SingleDimension': [-30, 100],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-100, 100),
+        'x0_SingleDimension': np.random.uniform(-30, 100),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Partially-Separable',

@@ -8,9 +8,9 @@ class Rosenbrock(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 1,
-        'searchSpace_SingleDimension': [-30, 30],
+        'searchSpace_SingleDimension': [-30, 10],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-30, 30),
+        'x0_SingleDimension': np.random.uniform(-30, 10),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

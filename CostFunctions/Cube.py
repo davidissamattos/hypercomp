@@ -19,9 +19,9 @@ class Cube(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[1, 1]],
-        'searchSpace': [[-10, 10], [-10, 10]],
+        'searchSpace': [[-10, 4], [-4, 10]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-10, 10), np.random.uniform(-10, 10)],
+        'x0': [np.random.uniform(-10, 4), np.random.uniform(-4, 10)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

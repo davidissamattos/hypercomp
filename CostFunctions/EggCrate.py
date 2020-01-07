@@ -18,9 +18,9 @@ class EggCrate(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[0, 0]],
-        'searchSpace': [[-5, 5], [-5, 5]],
+        'searchSpace': [[-2, 5], [-5, 2]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-5, 5), np.random.uniform(-5, 5)],
+        'x0': [np.random.uniform(-2, 5), np.random.uniform(-5, 2)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

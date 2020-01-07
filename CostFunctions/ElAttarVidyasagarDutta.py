@@ -19,9 +19,9 @@ class ElAttarVidyasagarDutta(CostFunctions):
     functionProperties = {
         'minimumValue': 1.712780354862198,
         'optimalArms': [[3.4091868222,-2.1714330361]],
-        'searchSpace': [[-500, 500], [-500, 500]],
+        'searchSpace': [[-300, 500], [-500, 300]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-500, 500), np.random.uniform(-500, 500)],
+        'x0': [np.random.uniform(-300, 500), np.random.uniform(-500, 300)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

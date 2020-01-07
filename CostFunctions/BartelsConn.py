@@ -18,9 +18,9 @@ class BartelsConn(CostFunctions):
     functionProperties = {
         'minimumValue': 1,
         'optimalArms': [[0, 0]],
-        'searchSpace': [[-500, 500], [-500, 500]],
+        'searchSpace': [[-500, 300], [-300, 500]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-500,500),np.random.uniform(-500,500)],
+        'x0': [np.random.uniform(-500,300),np.random.uniform(-300,500)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

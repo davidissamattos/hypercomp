@@ -18,9 +18,9 @@ class Griewank(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 0,
-        'searchSpace_SingleDimension': [-100, 100],
+        'searchSpace_SingleDimension': [-100, 50],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-100, 100),
+        'x0_SingleDimension': np.random.uniform(-100, 50),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

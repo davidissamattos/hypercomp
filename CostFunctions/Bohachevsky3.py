@@ -19,9 +19,9 @@ class Bohachevsky3(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[0, 0]],
-        'searchSpace': [[-100, 100], [-100, 100]],
+        'searchSpace': [[-50, 100], [-100, 50]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-100, 100), np.random.uniform(-100, 100)],
+        'x0': [np.random.uniform(-50, 100), np.random.uniform(-100, 50)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

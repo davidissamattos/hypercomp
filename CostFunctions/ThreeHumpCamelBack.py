@@ -18,9 +18,9 @@ class ThreeHumpCamelBack(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[0, 0]],
-        'searchSpace': [[-5, 5], [-5, 5]],
+        'searchSpace': [[-5, 2], [-2, 5]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-5,5), np.random.uniform(-5,5)],
+        'x0': [np.random.uniform(-5,2), np.random.uniform(-2,5)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

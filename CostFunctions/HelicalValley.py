@@ -19,9 +19,9 @@ class HelicalValley(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[1.0, 0.0, 0.0]],
-        'searchSpace': [[-10, 10], [-10, 10],[-10, 10]],
+        'searchSpace': [[-10, 6], [-10, 5],[-5, 10]],
         'spaceType': ['uniform', 'uniform', 'uniform'],
-        'x0': [np.random.uniform(-10, 10), np.random.uniform(-10, 10),np.random.uniform(-10, 10)],
+        'x0': [np.random.uniform(-10, 6), np.random.uniform(-10, 5),np.random.uniform(-5, 10)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',

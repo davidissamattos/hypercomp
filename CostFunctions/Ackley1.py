@@ -18,9 +18,9 @@ class Ackley1(CostFunctions):
     functionProperties = {
         'minimumValue': 0,
         'optimalArms_SingleDimension': 0,
-        'searchSpace_SingleDimension': [-35, 35],
+        'searchSpace_SingleDimension': [-35, 20],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-35, 35),
+        'x0_SingleDimension': np.random.uniform(-35, 20),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
