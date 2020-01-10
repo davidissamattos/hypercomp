@@ -1,28 +1,26 @@
 """
-Implementation of the Keane.py function
+Implementation of the McCormick.py function
 
-# Created by davidis at 2020-01-07
+# Created by davidis at 2020-01-09
 """
 
 from CostFunctions import CostFunctions
 import numpy as np
 
-__all__ = ['Keane']
+__all__ = ['McCormick']
 
 
-class Keane(CostFunctions):
+class McCormick(CostFunctions):
     """
-    Implementation of the Keane.py function from 
+    Implementation of the McCormick.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
-    https://github.com/andyfaff/ampgo/blob/master/%20ampgo%20--username%20andrea.gavana%40gmail.com/go_benchmark.py
-    https://al-roomi.org/benchmarks/unconstrained/2-dimensions/135-keane-s-function
     """
     functionProperties = {
-        'minimumValue': -0.673667521146855,
-        'optimalArms': [[0, 1.393249070031784],[1.393249070031784,0]],
-        'searchSpace': [[0, 10], [0, 10]],
+        'minimumValue': -1.9133,
+        'optimalArms': [[-0.547, -1.547]],
+        'searchSpace': [[-1.5, 4], [-3, 2]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(0, 10), np.random.uniform(0, 10)],
+        'x0': [np.random.uniform(-1.5, 4), np.random.uniform(-3, 2)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -39,5 +37,5 @@ class Keane(CostFunctions):
         """
         x1 = x[0]
         x2 = x[1]
-        value = -((np.sin(x1 - x2)**2.0) * np.sin(x1 + x2)**2.0)/np.sqrt(x1**2.0 + x2**2.0)
+        value = np.sin(x1 + x2) + np.power(x1-x2,2) -x1*3/2 +5*x2/2 +1
         return value

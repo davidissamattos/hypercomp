@@ -1,28 +1,27 @@
 """
-Implementation of the Keane.py function
+Implementation of the Mishra4 function
 
-# Created by davidis at 2020-01-07
+# Created by davidis at 2020-01-10
 """
 
 from CostFunctions import CostFunctions
 import numpy as np
 
-__all__ = ['Keane']
+__all__ = ['Mishra4']
 
 
-class Keane(CostFunctions):
+class Mishra4(CostFunctions):
     """
-    Implementation of the Keane.py function from 
+    Implementation of the Mishra4 function from
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
-    https://github.com/andyfaff/ampgo/blob/master/%20ampgo%20--username%20andrea.gavana%40gmail.com/go_benchmark.py
-    https://al-roomi.org/benchmarks/unconstrained/2-dimensions/135-keane-s-function
+    https://www.al-roomi.org/benchmarks/unconstrained/2-dimensions/138-mishra-s-function-no-3
     """
     functionProperties = {
-        'minimumValue': -0.673667521146855,
-        'optimalArms': [[0, 1.393249070031784],[1.393249070031784,0]],
-        'searchSpace': [[0, 10], [0, 10]],
+        'minimumValue': -0.199406970088833,
+        'optimalArms': [[-9.941127263635860, -9.999571661999983]],
+        'searchSpace': [[-10, 10], [-10, 10]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(0, 10), np.random.uniform(0, 10)],
+        'x0': [np.random.uniform(-10, 10), np.random.uniform(-10, 10)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -39,5 +38,11 @@ class Keane(CostFunctions):
         """
         x1 = x[0]
         x2 = x[1]
-        value = -((np.sin(x1 - x2)**2.0) * np.sin(x1 + x2)**2.0)/np.sqrt(x1**2.0 + x2**2.0)
+        value = np.sqrt(
+            np.abs(
+                np.sin(
+                    np.sqrt(
+                        np.abs(
+                            x1*x1 + x2))))) +\
+                0.01*(x1+x2)
         return value

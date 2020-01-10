@@ -75,6 +75,12 @@ from CostFunctions.JennrichSampson import JennrichSampson
 from CostFunctions.Langerman import Langerman
 from CostFunctions.Keane import Keane
 from CostFunctions.Leon import Leon
+from CostFunctions.Matyas import Matyas
+from CostFunctions.McCormick import McCormick
+from CostFunctions.Mishra1 import Mishra1N2, Mishra1N6, Mishra1N10, Mishra1N20
+from CostFunctions.Mishra2 import Mishra2N2, Mishra2N6, Mishra2N10, Mishra2N20
+from CostFunctions.Mishra3 import Mishra3
+from CostFunctions.Mishra4 import Mishra4
 
 all_benchmarks = [
     # 'simpleQuadratic',
@@ -148,7 +154,13 @@ all_benchmarks = [
     'JennrichSampson',
     'Langerman',
     'Keane',
-    'Leon'
+    'Leon',
+    'Matyas',
+    'McCormick',
+    'Mishra1N2', 'Mishra1N6', 'Mishra1N10', 'Mishra1N20',
+    'Mishra2N2', 'Mishra2N6', 'Mishra2N10', 'Mishra2N20',
+    'Mishra3',
+    'Mishra4'
     ]
 
 all_variables = copy.copy(all_benchmarks)

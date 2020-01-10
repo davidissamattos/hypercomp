@@ -14,13 +14,14 @@ class Bunkin2(CostFunctions):
     """
     Implementation of the Bunkin2.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
+    http://inspirehep.net/record/454583/files/1997_079.pdf
     """
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[-10, 0]],
-        'searchSpace': [[-15, -5], [-3, 3]],
+        'searchSpace': [[-15, -5], [-3, 5]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-15, -5), np.random.uniform(-3, 3)],
+        'x0': [np.random.uniform(-15, -5), np.random.uniform(-3, 5)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -39,5 +40,5 @@ class Bunkin2(CostFunctions):
         """
         x1 = x[0]
         x2 = x[1]
-        value = 100*(x2-0.01*np.power(x1,2)+1) + 0.01*np.power(x1+10,2)
+        value = 100*np.power(x2-0.01*x1*x1+1,2) + 0.01*np.power(x1+10,2)
         return value

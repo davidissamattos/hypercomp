@@ -50,5 +50,5 @@ class Dolan(CostFunctions):
         x3 = x[2]
         x4 = x[3]
         x5 = x[4]
-        value = (x1 + 1.7*x2)*np.sin(x1) - 1.5*x3 - 0.1*x4*np.cos(x4 + x5 - x1) + 0.2*np.power(x5,2.0) - x2 - 1.0
+        value = np.abs((x1 + 1.7*x2)*np.sin(x1) - 1.5*x3 - 0.1*x4*np.cos(x4 + x5 - x1) + 0.2*np.power(x5,2.0) - x2 - 1.0)
         return value

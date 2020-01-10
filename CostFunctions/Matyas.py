@@ -1,32 +1,31 @@
 """
-Implementation of the ThreeHumpCamelBack.py function
+Implementation of the Matyas.py function
 
-# Created by davidis at 2019-11-20
+# Created by davidis at 2020-01-09
 """
 
 from CostFunctions import CostFunctions
 import numpy as np
 
-__all__ = ['ThreeHumpCamelBack']
+__all__ = ['Matyas']
 
 
-class ThreeHumpCamelBack(CostFunctions):
+class Matyas(CostFunctions):
     """
-    Implementation of the ThreeHumpCamelBack.py function from 
+    Implementation of the Matyas.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
-    https://github.com/andyfaff/ampgo/blob/master/%20ampgo%20--username%20andrea.gavana%40gmail.com/go_benchmark.py
     """
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[0, 0]],
-        'searchSpace': [[-5, 2], [-2, 5]],
+        'searchSpace': [[-10, 5], [-5, 10]],
         'spaceType': ['uniform', 'uniform'],
-        'x0': [np.random.uniform(-5,2), np.random.uniform(-2,5)],
+        'x0': [np.random.uniform(-10, 5), np.random.uniform(-5, 10)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
         'Scalability': 'Non-Scalable',
-        'Modality': 'Multimodal',
+        'Modality': 'Unimodal',
         'Ndimensions': 2
     }
 
@@ -35,10 +34,8 @@ class ThreeHumpCamelBack(CostFunctions):
         x is an array E.g.
         x1 = x[0]
         x2 = x[1]
-        If it depends on receiving a dimension you need to reimplement the __init__  and call
-        the super and reimplement the function properties such as searchSpeace, spaceType, x0 etc...
         """
         x1 = x[0]
         x2 = x[1]
-        value = 2.0*x1**2.0 - 1.05*x1**4.0 + x1**6/6.0 + x1*x2 + x2**2.0
+        value = 0.26*(x1*x1 + x2*x2) - 0.48*x1*x2
         return value

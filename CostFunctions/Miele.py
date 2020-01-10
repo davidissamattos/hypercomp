@@ -22,5 +22,8 @@ class Miele(CostFunctions):
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        value = -(np.exp(-x1) - x2) ** 4 - 100 * (x2 - x3) ** 6 - (np.tan(x3 - x4)) ** 4 - x1 ** 8
+        value = (np.exp(x1) - x2) ** 4 +\
+                100 * (x2 - x3) ** 6 +\
+                (np.tan(x3 - x4)) ** 4 +\
+                x1 ** 8
         return value

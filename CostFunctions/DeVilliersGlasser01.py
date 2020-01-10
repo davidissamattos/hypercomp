@@ -15,19 +15,20 @@ class DeVilliersGlasser01(CostFunctions):
     Implementation of the DeVilliersGlasser01.py function from 
     M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
     http://infinity77.net/global_optimization/test_functions_nd_D.html
+    https://github.com/andyfaff/ampgo/blob/master/%20ampgo%20--username%20andrea.gavana%40gmail.com/go_benchmark.py
     """
     functionProperties = {
         'minimumValue': 0,
         'optimalArms': [[60.137, 1.371, 3.112, 1.761]],
-        'searchSpace': [[-500, 500],
-                        [-500, 500],
-                        [-500, 500],
-                        [-500, 500]],
+        'searchSpace': [[1, 100],
+                        [1, 100],
+                        [1, 100],
+                        [1, 100]],
         'spaceType': ['uniform', 'uniform','uniform','uniform'],
-        'x0': [np.random.uniform(-500, 500),
-               np.random.uniform(-500, 500),
-               np.random.uniform(-500, 500),
-               np.random.uniform(-500, 500)],
+        'x0': [np.random.uniform(1, 100),
+               np.random.uniform(1, 100),
+               np.random.uniform(1, 100),
+               np.random.uniform(1, 100)],
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
@@ -46,9 +47,9 @@ class DeVilliersGlasser01(CostFunctions):
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        value = 0
-        for i in range(1,24+1):
-            ti = 0.1 * (i-1)
-            yi = 60.137 * np.power(1.371, ti) * np.sin(3.112*ti + 1.761)
-            value = value + np.power(x1*np.power(x2,ti)*np.sin(x3*ti + x4) - yi,  2.0)
+
+        t_i = 0.1 * np.arange(24)
+        y_i = 60.137 * (1.371 ** t_i) * np.sin(3.112 * t_i + 1.761)
+        value = np.sum((x1*np.power(x2,t_i)*np.sin(x3*t_i + x4) - y_i)**2.0)
+
         return value
