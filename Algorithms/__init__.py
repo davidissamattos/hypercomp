@@ -7,6 +7,8 @@ from Algorithms.BayesianOpt import BayesOptEILatin, BayesOptLCBLatin, BayesOptEI
 from Algorithms.CMAES import CMAES
 from Algorithms.HpbandsterAlgorithms import hpbandsterBOHB, hpbandsterHyperBand
 from Algorithms.SMAC import SMAC
+from Algorithms.RandomXN import RandomSearch2, RandomSearch4, RandomSearch10
+from Algorithms.mLGHOO import mLGHOO, HOO
 
 
 all_algorithms = ['RandomSearch','TPE','ATPE',
@@ -15,4 +17,6 @@ all_algorithms = ['RandomSearch','TPE','ATPE',
                   'CMAES',
                   'hpbandsterBOHB','hpbandsterHyperBand',
                   'SMAC',
+                  'RandomSearch2', 'RandomSearch4', 'RandomSearch10',
+                  'mLGHOO', 'HOO',
                   ]

@@ -81,6 +81,10 @@ from CostFunctions.Mishra1 import Mishra1N2, Mishra1N6, Mishra1N10, Mishra1N20
 from CostFunctions.Mishra2 import Mishra2N2, Mishra2N6, Mishra2N10, Mishra2N20
 from CostFunctions.Mishra3 import Mishra3
 from CostFunctions.Mishra4 import Mishra4
+from CostFunctions.Mishra5 import Mishra5
+from CostFunctions.Mishra6 import Mishra6
+from CostFunctions.Mishra7 import Mishra7N2, Mishra7N6, Mishra7N10, Mishra7N20
+from CostFunctions.Mishra8 import Mishra8
 
 all_benchmarks = [
     # 'simpleQuadratic',
@@ -160,7 +164,11 @@ all_benchmarks = [
     'Mishra1N2', 'Mishra1N6', 'Mishra1N10', 'Mishra1N20',
     'Mishra2N2', 'Mishra2N6', 'Mishra2N10', 'Mishra2N20',
     'Mishra3',
-    'Mishra4'
+    'Mishra4',
+    'Mishra5',
+    'Mishra6',
+    'Mishra7N2', 'Mishra7N6', 'Mishra7N10', 'Mishra7N20',
+    'Mishra8'
     ]
 
 all_variables = copy.copy(all_benchmarks)

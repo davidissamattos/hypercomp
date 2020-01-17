@@ -6,4 +6,4 @@ COPY . /hypercomp
 WORKDIR hypercomp
 
 RUN ./setup.sh .
-ENTRYPOINT ["main.py"]
+ENTRYPOINT ["python3", "main.py"]

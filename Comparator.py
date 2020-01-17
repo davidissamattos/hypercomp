@@ -100,14 +100,9 @@ class Comparator():
         Run a single instance of an algorithm
         :return:
         """
-        if self.maxfevalBydimensions:
-            maxfeval = int(self.objFuncClass.functionProperties['Ndimensions']*self.maxfeval)
-            objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
-                                          sd=self.maxfeval,
-                                          maxfeval=maxfeval)
-        else:
-            objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
-                                      sd=self.maxfeval,
+
+        objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
+                                      sd=self.sd,
                                       maxfeval=self.maxfeval)
         algo = algoClass(objective=objective,
                          maxfeval=self.maxfeval)

@@ -1,7 +1,7 @@
 import logging
 import colorlog
 handler = logging.StreamHandler()
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO
 LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
 handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
 
@@ -41,7 +41,7 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'gcpcredentials.json'
 
 if __name__ == '__main__':
 
-    maxfeval =20
+    maxfeval =1000
     nsim=1
     sd=0
 
@@ -55,15 +55,22 @@ if __name__ == '__main__':
     #                      nsim=1,
     #                  useGCP=True,
     #                  GCPbucketName='hypercomp-experiment-data')DeVilliersGlasser01
-    sim = Comparator(objFuncClass=Easom,
+
+    func = SixHumpCamelBack(functionProperties=SixHumpCamelBack.functionProperties,maxfeval=100, sd=0)
+    print('Best ',[-0.0898, 0.7126],' ' ,func([-0.0898, 0.7126]))
+    print(func([0, 0]))
+    print(func([1, 1]))
+    print(func([-1, -1]))
+
+    sim = Comparator(objFuncClass=SixHumpCamelBack,
                          results_folder='data',
                          filename ='test.csv',
                          sd=sd,
                          maxfeval=maxfeval,
                          nsim=nsim,
                          timeout_min=15)
-
-    sim.run()
+    #
+    # sim.run()
     # logger.info('My info')
     # logger.debug('My debug')
     # logger.warning('My warning')
@@ -81,6 +88,8 @@ if __name__ == '__main__':
     # from Algorithms.NiaPy import NiaPyABC
     # sim.run_algorithm(NiaPyABC)
 
+    from Algorithms.mLGHOO import mLGHOO
+    sim.run_algorithm(mLGHOO)
 
 
 

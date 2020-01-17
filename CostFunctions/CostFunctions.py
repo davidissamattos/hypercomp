@@ -8,7 +8,7 @@ __all__ = ['CostFunctions']
 
 
 class CostFunctions(ABC):
-    def __init__(self, functionProperties, sd=1, maxfeval=10, tol=0.001):
+    def __init__(self, functionProperties, sd=0, maxfeval=10, tol=0.001):
         # Saving parameters
         self._maxfevals = maxfeval
         self.sd = sd
