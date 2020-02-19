@@ -85,7 +85,7 @@ class BaseFormLGHOO(Algorithm):
             best_arm = NAN
             success = False
 
-        return best_arm, success
+        return best_arm, success, self.objective
 
 class mLGHOO(BaseFormLGHOO):
     def __init__(self, objective, maxfeval):

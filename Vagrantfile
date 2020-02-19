@@ -26,10 +26,8 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder HOST_PATH, GUEST_PATH
   # Disable default Vagrant folder, use a unique path per project
   config.vm.synced_folder '.', '/home/'+VM_USER+'', disabled: true
-  
   # Setup
   config.vm.provision "shell",
     path: "setup.sh",
     args: GUEST_PATH
-
 end

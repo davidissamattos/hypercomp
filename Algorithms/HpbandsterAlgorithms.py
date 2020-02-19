@@ -41,7 +41,6 @@ class HpbandsterAlgorithms(Algorithm):
             class MyWorker(Worker):
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
-
                 def compute(self, config, budget, **kwargs):
                     x = dictToArray(config)
                     res = objective(x)

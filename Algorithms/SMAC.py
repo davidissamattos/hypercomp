@@ -91,4 +91,4 @@ class SMAC(Algorithm):
                 self.objective.GetCostFunctionName()))
             best_arm = NAN
             success = False
-        return best_arm, success
+        return best_arm, success, self.objective

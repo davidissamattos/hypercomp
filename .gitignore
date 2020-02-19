@@ -19,6 +19,5 @@ __pychache__/*
 ubuntu-*
 packages_snippets.py
 CostFunctions/__pycache__/
-gcpcredentials.json
 .DS_Store
 .gitignore

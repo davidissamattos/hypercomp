@@ -60,9 +60,13 @@ class CostFunctions(ABC):
                 logger.debug('Max iterations were achieved')
                 # raise ValueError("Max iterations allowed is over")
             self._nfeval = 1 + self._nfeval
+            # print('Final Nfeval: ', self._nfeval)
             return self.eval(xx)
         except:
             raise ValueError
+
+    def ChangeNFevalToDimensions(self,k):
+        self._nfeval = k*self.functionProperties['Ndimensions']
 
     # From this point we verify all the metrics that we want to investigate
     def GetRegret(self):
@@ -71,7 +75,7 @@ class CostFunctions(ABC):
         Regret =  Best possible value without noise - output values for the iteration 
         """
         # value - min ;value > min always
-        return self.outputValues - np.ones(np.size(self.outputValues)) * self.minimumValue
+        return np.array(self.outputValues) - np.ones(np.size(self.outputValues)) * self.minimumValue
 
     def GetCumulativeRegretVector(self):
         """
@@ -131,6 +135,21 @@ class CostFunctions(ABC):
         """
         return str(self.__class__.__name__)
 
+    def GetNFeval(self):
+        # print('Final Nfeval: ',self._nfeval)
+        return self._nfeval
+
+    def isBBOB(self):
+
+        try:
+            v = self.functionProperties['BBOB']
+            if v is not None:
+                ret = 'True'
+        except:
+            ret  = 'False'
+
+        return ret
+
     def GenerateInfo(self, best_arm, timetocomplete, algorithm_name, success=True):
         """
         In this function we create a dictionary logging all the interesting things we want from this experimental run
@@ -139,7 +158,7 @@ class CostFunctions(ABC):
         try:
             info = {
                 'BestArm': best_arm,
-                'NumberFunctionEval': self._nfeval,
+                'NumberFunctionEval': self.GetNFeval(),
                 'Algorithm': algorithm_name,
                 'CostFunction': self.GetCostFunctionName(),
                 'EuclideanDistance': self.GetEuclideanDistance(best_arm),
@@ -152,7 +171,8 @@ class CostFunctions(ABC):
                 'Scalability': self.functionProperties['Scalability'],
                 'Modality': self.functionProperties['Modality'],
                 'Ndimensions': self.functionProperties['Ndimensions'],
-                'OptimizationSuccessful': success
+                'OptimizationSuccessful': success,
+                'BBOB': self.isBBOB()
             }
             logger.info('Results for ' + str(algorithm_name) + ' with cost function ' + str(
                 self.GetCostFunctionName()) + ' were succesfully created')

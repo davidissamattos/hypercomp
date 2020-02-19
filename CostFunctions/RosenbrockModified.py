@@ -19,7 +19,8 @@ class RosenbrockModified(CostFunctions):
         'Separability': 'Non-Separable',
         'Scalability': 'Non-Scalable',
         'Modality': 'Multimodal',
-        'Ndimensions': 2
+        'Ndimensions': 2,
+        'BBOB': 'True'
     }
 
     def func(self, x):

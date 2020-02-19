@@ -86,7 +86,9 @@ class BayesOpt(Algorithm):
                                                               initial_design_type=self.initial_design_type,
                                                               exact_feval=False,  # the outputs are not exect
                                                               model_type=self.model_type,
-                                                              acquisition_type=self.acquisition_function)
+                                                              acquisition_type=self.acquisition_function,
+                                                              verbosity=False,
+                                                              verbosity_model=False)
                 x_next = bo_step.suggest_next_locations()
                 y_next = self.objective(x_next[0])  # only suggests one and we need to unpack
                 X_step = np.vstack((X_step, x_next))
@@ -109,7 +111,7 @@ class BayesOpt(Algorithm):
             best_arm = NAN
             success = False
         #Return value should be a list/array
-        return best_arm, success
+        return best_arm, success, self.objective
 
 class BayesOptEIRandom(BayesOpt):
     def __init__(self, objective, maxfeval):

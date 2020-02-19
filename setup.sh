@@ -1,6 +1,8 @@
 #!/bin/bash
 echo "Provisioning virtual machine..."
 echo "Installing Basics"
+echo "Current folder"
+ls
     apt-get update
     apt-get install git cmake build-essential swig -y apt-utils
     cd $1

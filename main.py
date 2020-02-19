@@ -7,28 +7,6 @@ import googleapiclient.discovery
 import logging
 import colorlog
 
-handler = logging.StreamHandler()
-LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
-handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
-
-# Specifying which files I want with log levels
-logger = logging.getLogger(__name__)
-algorithm_logger = logging.getLogger('Algorithm')
-costfunctions_logger = logging.getLogger('CostFunctions')
-comparator_logger = logging.getLogger('Comparator')
-
-# handlers
-logger.addHandler(handler)
-algorithm_logger.addHandler(handler)
-costfunctions_logger.addHandler(handler)
-comparator_logger.addHandler(handler)
-
-# removing progagation from loggers
-logger.propagate = False
-algorithm_logger.propagate = False
-costfunctions_logger.propagate = False
-comparator_logger.propagate = False
-
 from tqdm import tqdm
 
 from CostFunctions import all_benchmarks as bm
@@ -38,7 +16,29 @@ if sys.version_info[0] < 3:
     raise Exception("Must be using Python 3")
 
 
-def setLogLevels(loglevel):
+def setLogLevels(loglevel, usegcp):
+    if usegcp:
+        import google.cloud.logging
+        from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+        client = google.cloud.logging.Client()
+        client.setup_logging()
+        handler = CloudLoggingHandler(client)
+    else:
+        handler = logging.StreamHandler()
+        LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
+        handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
+
+    # Specifying which files I want with log levels
+    logger = logging.getLogger(__name__)
+    algorithm_logger = logging.getLogger('Algorithm')
+    costfunctions_logger = logging.getLogger('CostFunctions')
+    comparator_logger = logging.getLogger('Comparator')
+
+    # removing progagation from loggers
+    logger.propagate = False
+    algorithm_logger.propagate = False
+    costfunctions_logger.propagate = False
+    comparator_logger.propagate = False
     loglevel = loglevel.lower()
     if loglevel == 'debug':
         LOG_LEVEL = logging.DEBUG
@@ -58,41 +58,38 @@ def setLogLevels(loglevel):
     costfunctions_logger.setLevel(LOG_LEVEL)
     comparator_logger.setLevel(LOG_LEVEL)
 
+    # handlers
+    logger.addHandler(handler)
+    algorithm_logger.addHandler(handler)
+    costfunctions_logger.addHandler(handler)
+    comparator_logger.addHandler(handler)
 
 
 
 
-def run(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_min,
-        funcrange_max, func, timeout, loglevel):
+def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
+        funcrange_max, func, timeout, loglevel,nfevalbydimensions,algorithmgroup):
     # configuring log level
     # levels per file
-    setLogLevels(loglevel)
+    setLogLevels(loglevel,usegcp)
 
     # defining the scope of functions to run
     benchmark = []
     maxfeval = int(maxfeval)
     nsim = int(nsim)
 
-    # Dealing with the path
-    if path == None and usegcp==False:
-        path = os.getcwd()
-        logger.info('Path does not exist. Using the current working directory')
-    elif not os.path.isdir(path):
-        path = os.getcwd()
-
-
     ##Dealing with func and funcrange
     # If we dont set both ranges
     if funcrange_min == None or funcrange_max == None:
         if func == 'all' or func == None:
+            logger.info('Using all benchmark functions')
             benchmark = bm
         elif func in bm:
             benchmark = [func]
+            logger.info('Using only functions : '+str(benchmark))
         else:
             logger.error('The function selected is not valid. It should be included in: ' + str(bm))
             raise Exception
-
-    # Tuple is not empty
     else:
         minRange = funcrange_min
         maxRange = funcrange_max
@@ -111,19 +108,17 @@ def run(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_
         else:
             logger.info('Using only functions in range: ' + str(minRange) + ' ' + str(maxRange))
             benchmark = bm[minRange:maxRange]
+            logger.info('Using benchmark functions : ' + str(benchmark))
 
     if usegcp:
-        if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS') is None:
-            try:
-                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = gcpcredentials
-            except:
-                logger.error("Could not find the credentials")
-                raise KeyError('Could not find the credentials')
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './gcpcredentials.json'
+        logger.info('Using GCP')
 
+    logger.info('Using timeout of :' +str(timeout))
     for cname in tqdm(benchmark):
         module = importlib.import_module('CostFunctions')
         cl = getattr(module, cname)  # cl is a class of the CostFunctions imported dynamically
-        filename = cname + '-sd-' + str(sd) + '-feval-' + str(maxfeval) + '-nsim-' + str(nsim) + '.csv'
+        filename = cname + '-sd-' + str(sd) + '-feval-' + str(maxfeval) + '-i-'
         sim = Comparator(objFuncClass=cl,
                          results_folder=path,
                          filename=filename,
@@ -132,7 +127,9 @@ def run(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_
                          nsim=nsim,
                          useGCP=usegcp,
                          GCPbucketName=bucketname,
-                         timeout_min=timeout)
+                         timeout_min=timeout,
+                         nfevalbydimensions=nfevalbydimensions,
+                         algorithmgroup=algorithmgroup)
         sim.run()
 
 
@@ -147,12 +144,11 @@ def hypercomp():
               help='(REQUIRED) Specify the standard deviation used in the cost functions. The same value will be used for all')
 @click.option('--maxfeval', required=True, type=int,
               help='(REQUIRED) Specify the maximum number of evaluations for the cost function for each algorithm. This is the budget. Same budget will be used for all algorithms and functions')
-@click.option('--path', '-p', default=None, required=False, type=str,
-              help='Specify the path to save the data. Default value is in the current location')
+@click.option('--path', '-p', default=None, required=True, type=str,
+              help='Specify a true an exisitng path to save the data')
 @click.option('--nsim', '-n', default=1, required=False, type=int,
               help=' Specify the number of time the same function will be simulated by the same algorithm. Default value is 1. For statistical analysis it is recommended at least 30.')
 @click.option('--usegcp', default=False, required=False, type=bool, help='Save results in GCP')
-@click.option('--gcpcredentials', default=None, required=False, type=str, help='Path to the credentials if needed')
 @click.option('--bucketname', default=None, required=False, type=str, help='GCP bucket name')
 @click.option('--funcrange_min', required=False, type=int,
               help='Specify the min range of the list of functions that we will run.  Varies from 0 to ?. Values should be an integer')
@@ -164,10 +160,25 @@ def hypercomp():
               help='Time in minutes. Specify the timeout for one algorithm to optimize one function. Default is 15min.')
 @click.option('--loglevel', default='info', required=False, type=str,
               help='Specify the level of information that appears on the screen, equal to the logging levels in python. Default value is info. Possible values: debug, info, warning, critical, error')
-def run_cli(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_min,
-            funcrange_max, func, timeout, loglevel):
-    run(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_min,
-        funcrange_max, func, timeout, loglevel)
+@click.option('--nfevalbydimensions', default=False, required=False, type=bool,
+              help='Specify if the number of function evaluations will depend on the dimensions. If True the maxfeval will be maxfeval*Dimensions')
+@click.option('--algorithmgroup', default='all', required=False, type=str,
+              help='Specify the group of algorithms to run. Options all, niapy, etc..')
+def runcli(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
+            funcrange_max, func, timeout, loglevel,nfevalbydimensions, algorithmgroup):
+    run(sd=sd,
+        maxfeval=maxfeval,
+        path=path,
+        nsim=nsim,
+        usegcp=usegcp,
+        bucketname=bucketname,
+        funcrange_min=funcrange_min,
+        funcrange_max=funcrange_max,
+        func=func,
+        timeout=timeout,
+        loglevel=loglevel,
+        nfevalbydimensions=nfevalbydimensions,
+        algorithmgroup=algorithmgroup)
 
 
 # this we are reading environmental variables --> for running with docker without passing this much arguments
@@ -175,7 +186,7 @@ def run_cli(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcra
 # not fully tested
 
 @hypercomp.command()
-def run_env():
+def runenv():
     sd = os.environ.get('HYPERCOMP_SD')
     if sd is not None:
         sd = float(sd)
@@ -195,10 +206,6 @@ def run_env():
     usegcp = os.environ.get('HYPERCOMP_USEGCP')
     if usegcp is not None:
         usegcp=bool(usegcp)
-
-    gcpcredentials = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-    if gcpcredentials is not None:
-        gcpcredentials=str(gcpcredentials)
 
     bucketname = os.environ.get('GCP_BUCKET')
     if bucketname is not None:
@@ -224,11 +231,27 @@ def run_env():
     if loglevel is not None:
         loglevel=str(loglevel)
 
-    print(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_min,
-        funcrange_max, func, timeout, loglevel)
+    nfevalbydimensions = os.environ.get('HYPERCOMP_NFEVALBYDIMENSIONS')
+    if nfevalbydimensions is not None:
+        nfevalbydimensions = bool(nfevalbydimensions)
 
-    run(sd, maxfeval, path, nsim, usegcp, gcpcredentials, bucketname, funcrange_min,
-        funcrange_max, func, timeout, loglevel)
+    algorithmgroup = os.environ.get('HYPERCOMP_ALGORITHMGROUP')
+    if algorithmgroup is not None:
+        algorithmgroup = str(algorithmgroup)
+
+    run(sd=sd,
+        maxfeval=maxfeval,
+        path=path,
+        nsim=nsim,
+        usegcp=usegcp,
+        bucketname=bucketname,
+        funcrange_min=funcrange_min,
+        funcrange_max=funcrange_max,
+        func=func,
+        timeout=timeout,
+        loglevel=loglevel,
+        nfevalbydimensions=nfevalbydimensions,
+        algorithmgroup=algorithmgroup)
 
 
 

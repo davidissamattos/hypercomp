@@ -78,7 +78,7 @@ class RandomSearchN(Algorithm):
             best_arm = NAN
             success = False
 
-        return best_arm, success
+        return best_arm, success, self.objective
 
 
 class RandomSearch2(RandomSearchN):

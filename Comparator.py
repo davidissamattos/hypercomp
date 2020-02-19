@@ -8,8 +8,7 @@ from tqdm import tqdm
 #GoogleCloud bucket
 from google.cloud import storage
 # say where your private key to google cloud exists
-from Algorithms import all_algorithms
-
+from Algorithms import all_algorithms, niapy_random_search, no_bayesian
 
 class Comparator():
     """
@@ -29,7 +28,9 @@ class Comparator():
                  nsim=1,
                  useGCP=False,
                  GCPbucketName=None,
-                 timeout_min=15):
+                 timeout_min=15,
+                 nfevalbydimensions=False,
+                 algorithmgroup='all'):
 
         self.objFuncClass = objFuncClass
         #standard deviation
@@ -43,7 +44,10 @@ class Comparator():
         self.resultsFolder = results_folder
         self.filename = filename
         self.useGCP=useGCP
-
+        self.nfevalbydimensions=nfevalbydimensions
+        self.algorithmgroup = algorithmgroup
+        if algorithmgroup is None:
+            self.algorithmgroup='all'
         if timeout_min > 0:
             self.timeout = int(timeout_min * 60)
         else:
@@ -51,12 +55,12 @@ class Comparator():
         logger.info('Using a timeout of '+ str(self.timeout)+ ' seconds per algorithm')
 
         if self.useGCP:
-            if GCPbucketName==None:
+            if GCPbucketName is None:
                 logger.error('You need to set a GCP bucket name')
                 raise Exception
             else:
                 self.GCPbucketName = GCPbucketName
-                self.GCPbucketFolderName = results_folder
+                self.GCPbucketFolderName = self.resultsFolder
                 self.storage_client = storage.Client()
                 self.bucket = self.storage_client.get_bucket(GCPbucketName)
         pass
@@ -67,31 +71,32 @@ class Comparator():
         Run all algorithms for nsim times then rank and save them
         :return:
         """
+        if self.algorithmgroup == 'all':
+            alg_to_run = all_algorithms
+        if self.algorithmgroup == 'niapy':
+            alg_to_run = niapy_random_search
+        if self.algorithmgroup == 'no_bayesian':
+            alg_to_run = no_bayesian
+        else:
+            raise ValueError('There is no algorithm class called: ' + self.algorithmgroup)
         #tqdm is just to create a progress bar
         for i in tqdm(range(self.nsim), desc='NSim'):
             logger.info('Running all the algorithms for simulation number ' + str(i) + ' and cost function '+ str(self.objFuncClass))
             #dinamically importing the algorithm classes from Algorithms
-            for algname in all_algorithms:
+            results = []
+            for algname in alg_to_run:
                 module = importlib.import_module('Algorithms')
                 cl = getattr(module, algname)  # cl is a class of the CostFunctions imported dynamically
                 result = self.run_algorithm(cl)
                 result['simNumber'] = i
-                self.results.append(result)
+                results.append(result)
+            #After all iterations we rank them by simulation number
+            # df = pd.DataFrame(self.results)
+            df = pd.DataFrame(results)
 
-        #After all iterations we rank them by simulation number
-        df = pd.DataFrame(self.results)
-
-        #I will leave the ranking to the analysis
-        # # Rank by true distance
-        # df['RankTrueRewardDifference'] = df.groupby('simNumber')['TrueRewardDifference'].rank(method='average', ascending=True, na_option='bottom')
-        # # Rank the regret
-        # df['RankCumulativeRegret'] = df.groupby('simNumber')['CumulativeRegret'].rank(method='average', ascending=True, na_option='bottom')
-        # # rank the euclidean distance
-        # df['RankEuclideanDistance'] = df.groupby('simNumber')['EuclideanDistance'].rank(method='average', ascending=True, na_option='bottom')
-
-        #saving results depending if it is google cloud or not
-        self.saveResults(df)
-        self.cleanUp()
+            #saving results depending if it is google cloud or not
+            self.saveResults(df,i)
+            self.cleanUp()
 
 
 
@@ -100,12 +105,14 @@ class Comparator():
         Run a single instance of an algorithm
         :return:
         """
-
-        objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
+        #We are adding here as a class variable simply because it is somehow lost in the middle of the calculations the instantiation and reference
+        self._objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
                                       sd=self.sd,
                                       maxfeval=self.maxfeval)
-        algo = algoClass(objective=objective,
+        algo = algoClass(objective=self._objective,
                          maxfeval=self.maxfeval)
+        if self.nfevalbydimensions:
+            self._objective.ChangeNFevalToDimensions(k=self.maxfeval)
 
         result = algo.run(timeout=self.timeout)
         return result
@@ -126,26 +133,30 @@ class Comparator():
         purge(os.getcwd(), 'temp')
         logger.info('All temporary files were deleted')
 
-    def saveResults(self, df):
+    def saveResults(self, df,i):
         """
         Saving the df results as a csv file
         Also creates the ranks by the different variables
+        df is the data frame
+        i is the simulation number since we always save it
         """
+        newfilename = self.filename + str(i) + '.csv'
         if self.useGCP:
             # First lets create a temporary folder to save
             cwpath = os.getcwd()
             path = os.path.join(cwpath, 'temp')
             if not os.path.isdir(path):
                 os.mkdir(path)
-            savepath = os.path.join(path, self.filename)
+            savepath = os.path.join(path, newfilename)
             df.to_csv(savepath)
 
             # now we upload to the GCP
-            blob = self.bucket.blob(self.GCPbucketFolderName + self.filename)
+            gcpsavepath = os.path.join(self.GCPbucketFolderName,newfilename)
+            blob = self.bucket.blob(gcpsavepath)
             blob.upload_from_filename(savepath)
 
             # The folder is always deleted in the cleanup
         else:
-            savepath = os.path.join(self.resultsFolder, self.filename)
+            savepath = os.path.join(self.resultsFolder,newfilename)
             df.to_csv(savepath)
         return

@@ -16,6 +16,7 @@ class Rosenbrock(CostFunctions):
         'Separability': 'Non-Separable',
         'Scalability': 'Scalable',
         'Modality': 'Unimodal',
+        'BBOB': 'True'
     }
 
     def __init__(self, functionProperties, N = 3, sd=1, maxfeval=10):

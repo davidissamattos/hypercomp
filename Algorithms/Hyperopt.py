@@ -75,6 +75,7 @@ class Hyperopt(Algorithm):
                         max_evals=self.maxfeval,
                         show_progressbar=False,
                         verbose=0)
+
             best_arm = convertToArray(best)
             success = True
         except:
@@ -83,7 +84,7 @@ class Hyperopt(Algorithm):
             best_arm = NAN
             success = False
 
-        return best_arm, success
+        return best_arm, success, self.objective
 
 class RandomSearch(Hyperopt):
     def __init__(self, objective, maxfeval):

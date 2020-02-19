@@ -11,12 +11,39 @@ from Algorithms.RandomXN import RandomSearch2, RandomSearch4, RandomSearch10
 from Algorithms.mLGHOO import mLGHOO, HOO
 
 
-all_algorithms = ['RandomSearch','TPE','ATPE',
-                  'NiaPyGWO','NiaPyNelderMead','NiaPyPSO','NiaPyABC','NiaPyCuckooSearch','NiaPyDifferentialEvolution','NiaPySimulatedAnnealing',
-                  'BayesOptEIRandom', 'BayesOptEILatin', 'BayesOptLCBRandom', 'BayesOptLCBLatin', 'BayesOptMPIRandom', 'BayesOptMPILatin',
-                  'CMAES',
-                  'hpbandsterBOHB','hpbandsterHyperBand',
-                  'SMAC',
-                  'RandomSearch2', 'RandomSearch4', 'RandomSearch10',
-                  'mLGHOO', 'HOO',
-                  ]
+
+
+bayesian  = ['BayesOptEIRandom', 'BayesOptEILatin',
+            # 'BayesOptLCBRandom', 'BayesOptLCBLatin'
+            #'BayesOptMPIRandom', 'BayesOptMPILatin'
+             ]
+
+mlghoo = ['mLGHOO', 'HOO']
+
+others = ['CMAES']
+
+smac = ['SMAC']
+
+hpbandster = ['hpbandsterBOHB','hpbandsterHyperBand']
+
+tpe = ['TPE','ATPE']
+
+random_search = ['RandomSearch', 'RandomSearch2', 'RandomSearch4', 'RandomSearch10']
+
+niapy = [ 'NiaPyABC',
+            'NiaPyBat',
+            'NiaPyCuckooSearch',
+            'NiaPyDifferentialEvolution',
+            'NiaPyFireflyAlgorithm',
+            'NiaPyGeneticAlgorithm',
+            'NiaPyGWO',
+            'NiaPyNelderMead',
+            'NiaPyPSO',
+            'NiaPySimulatedAnnealing']
+
+
+niapy_random_search = niapy +random_search
+
+no_bayesian = niapy + random_search + tpe + others + mlghoo
+
+all_algorithms = bayesian + mlghoo + others + smac + hpbandster + tpe + random_search + niapy
