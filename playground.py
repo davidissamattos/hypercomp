@@ -40,35 +40,57 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'gcpcredentials.json'
 
 
 if __name__ == '__main__':
+    from CostFunctions.LinearSlope import LinearSlopeN2
+    func = LinearSlopeN2(functionProperties=LinearSlopeN2.functionProperties,maxfeval=100, sd=0)
+    print(func([-5,-5]),
+          func([-5, 5]),
+          func([5, -5]),
+          func([5, 5]))
+    print(func.functionProperties['optimalArms'])
 
-    maxfeval =1000
-    nsim=1
-    sd=0
 
+    # from CostFunctions import WeierstrassN2, WeierstrassN6, WeierstrassN10, WeierstrassN20
+    # func = WeierstrassN2(functionProperties=WeierstrassN2.functionProperties,maxfeval=100, sd=0)
+    # print(func([0,0]))
+    #
+    # func = WeierstrassN6(functionProperties=WeierstrassN6.functionProperties, maxfeval=100, sd=0)
+    # print(func([0, 0, 0, 0, 0, 0]))
+    #
+    # func = WeierstrassN10(functionProperties=WeierstrassN10.functionProperties, maxfeval=100, sd=0)
+    # print(func([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+    #
+    # func = WeierstrassN20(functionProperties=WeierstrassN20.functionProperties, maxfeval=100, sd=0)
+    # print(func([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+    #
 
-
-    # sim = Comparator(objFuncClass=Easom,
+    # maxfeval =1000
+    # nsim=1
+    # sd=0
+    #
+    #
+    #
+    # # sim = Comparator(objFuncClass=Easom,
+    # #                      results_folder='data',
+    # #                      filename = 'test.csv',
+    # #                      sd=0,
+    # #                      maxfeval=10,
+    # #                      nsim=1,
+    # #                  useGCP=True,
+    # #                  GCPbucketName='hypercomp-experiment-data')DeVilliersGlasser01
+    #
+    # func = SixHumpCamelBack(functionProperties=SixHumpCamelBack.functionProperties,maxfeval=100, sd=0)
+    # print('Best ',[-0.0898, 0.7126],' ' ,func([-0.0898, 0.7126]))
+    # print(func([0, 0]))
+    # print(func([1, 1]))
+    # print(func([-1, -1]))
+    #
+    # sim = Comparator(objFuncClass=SixHumpCamelBack,
     #                      results_folder='data',
-    #                      filename = 'test.csv',
-    #                      sd=0,
-    #                      maxfeval=10,
-    #                      nsim=1,
-    #                  useGCP=True,
-    #                  GCPbucketName='hypercomp-experiment-data')DeVilliersGlasser01
-
-    func = SixHumpCamelBack(functionProperties=SixHumpCamelBack.functionProperties,maxfeval=100, sd=0)
-    print('Best ',[-0.0898, 0.7126],' ' ,func([-0.0898, 0.7126]))
-    print(func([0, 0]))
-    print(func([1, 1]))
-    print(func([-1, -1]))
-
-    sim = Comparator(objFuncClass=SixHumpCamelBack,
-                         results_folder='data',
-                         filename ='test.csv',
-                         sd=sd,
-                         maxfeval=maxfeval,
-                         nsim=nsim,
-                         timeout_min=15)
+    #                      filename ='test.csv',
+    #                      sd=sd,
+    #                      maxfeval=maxfeval,
+    #                      nsim=nsim,
+    #                      timeout_min=15)
     #
     # sim.run()
     # logger.info('My info')
@@ -88,8 +110,8 @@ if __name__ == '__main__':
     # from Algorithms.NiaPy import NiaPyABC
     # sim.run_algorithm(NiaPyABC)
 
-    from Algorithms.mLGHOO import mLGHOO
-    sim.run_algorithm(mLGHOO)
+    # from Algorithms.mLGHOO import mLGHOO
+    # sim.run_algorithm(mLGHOO)
 
 
 

@@ -37,7 +37,6 @@ def dictToArray(x):
 
 def isConfigurationSpace(x):
     if isinstance(x, Configuration):
-        print
         return True
     else:
         return False

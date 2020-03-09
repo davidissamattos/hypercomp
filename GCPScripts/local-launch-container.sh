@@ -7,4 +7,4 @@
 #we use this script as launch-container nameofisntance
 
 
-docker run --env-file=./ExpGroupEnvSetup/$1.txt --env GCP_INSTANCE_NAME=$1 hypercomp run-env
+docker run --env-file=./ExpGroupEnvSetup/$1.env --env GCP_INSTANCE_NAME=$1 hypercomp runenv

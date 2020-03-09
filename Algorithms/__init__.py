@@ -2,7 +2,7 @@ import copy
 from Algorithms.Algorithm import Algorithm
 
 from Algorithms.Hyperopt import RandomSearch, TPE, ATPE
-from Algorithms.NiaPy import NiaPyABC, NiaPyCuckooSearch, NiaPyDifferentialEvolution, NiaPyGWO, NiaPyNelderMead, NiaPyPSO, NiaPySimulatedAnnealing
+from Algorithms.NiaPy import NiaPyABC, NiaPyBat,NiaPyCuckooSearch, NiaPyDifferentialEvolution, NiaPyFireflyAlgorithm, NiaPyGeneticAlgorithm,NiaPyGWO,NiaPyNelderMead, NiaPyPSO, NiaPySimulatedAnnealing
 from Algorithms.BayesianOpt import BayesOptEILatin, BayesOptLCBLatin, BayesOptEIRandom, BayesOptMPILatin, BayesOptMPIRandom, BayesOptLCBRandom
 from Algorithms.CMAES import CMAES
 from Algorithms.HpbandsterAlgorithms import hpbandsterBOHB, hpbandsterHyperBand
@@ -42,7 +42,7 @@ niapy = [ 'NiaPyABC',
             'NiaPySimulatedAnnealing']
 
 
-niapy_random_search = niapy +random_search
+niapy_random_search = niapy + random_search
 
 no_bayesian = niapy + random_search + tpe + others + mlghoo
 

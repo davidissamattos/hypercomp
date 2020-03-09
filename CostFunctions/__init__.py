@@ -155,15 +155,46 @@ from CostFunctions.Ursem4 import Ursem4
 from CostFunctions.UrsemWaves import UrsemWaves
 from CostFunctions.VenterSobiezcczanskiSobieski import VenterSobiezcczanskiSobieski
 from CostFunctions.Watson import Watson
+from CostFunctions.WayburnSeader1 import WayburnSeader1
+from CostFunctions.WayburnSeader2 import WayburnSeader2
+from CostFunctions.WayburnSeader3 import WayburnSeader3
+from CostFunctions.WWavy import WWavyN2, WWavyN6, WWavyN10, WWavyN20
+from CostFunctions.WeierstrassN2 import WeierstrassN2
+from CostFunctions.Whitley import WhitleyN2, WhitleyN6, WhitleyN10, WhitleyN20
+from CostFunctions.Wolfe import Wolfe
+from CostFunctions.XinSheYang1 import XinSheYang1N2, XinSheYang1N6, XinSheYang1N10, XinSheYang1N20
+from CostFunctions.XinSheYang2 import XinSheYang2N2, XinSheYang2N6, XinSheYang2N10, XinSheYang2N20
+from CostFunctions.XinSheYang3 import XinSheYang3N2, XinSheYang3N6, XinSheYang3N10, XinSheYang3N20
+from CostFunctions.XinSheYang4 import XinSheYang4N2, XinSheYang4N6, XinSheYang4N10, XinSheYang4N20
+from CostFunctions.Zakharov import ZakharovN2, ZakharovN6, ZakharovN10, ZakharovN20
+from CostFunctions.Zettl import Zettl
+from CostFunctions.Zirilli import Zirilli
 
+from CostFunctions.Ellipsoidal import EllipsoidalN2, EllipsoidalN6, EllipsoidalN10, EllipsoidalN20
+from CostFunctions.Rastrigin import RastriginN2, RastriginN6, RastriginN10, RastriginN20
+from CostFunctions.BucheRastrigin import BucheRastriginN2, BucheRastriginN6, BucheRastriginN10, BucheRastriginN20
+from CostFunctions.LinearSlope import LinearSlopeN2, LinearSlopeN6,LinearSlopeN10, LinearSlopeN20
+from CostFunctions.AttractiveSector import AttractiveSectorN2, AttractiveSectorN6, AttractiveSectorN10, AttractiveSectorN20
+from CostFunctions.StepEllipsoidal import StepEllipsoidalN2, StepEllipsoidalN6, StepEllipsoidalN10, StepEllipsoidalN20
+from CostFunctions.RosenbrockRotated import RosenbrockRotatedN2, RosenbrockRotatedN6, RosenbrockRotatedN10, RosenbrockRotatedN20
+from CostFunctions.Discus import DiscusN2, DiscusN6, DiscusN10, DiscusN20
+from CostFunctions.BentCigar import BentCigarN2, BentCigarN6, BentCigarN10, BentCigarN20
+from CostFunctions.SharpRidge import SharpRidgeN2, SharpRidgeN6, SharpRidgeN10, SharpRidgeN20
+from CostFunctions.DifferentPowers import DifferentPowersN2, DifferentPowersN6, DifferentPowersN10, DifferentPowersN20
+from CostFunctions.SchaffersF7 import SchaffersF7N2, SchaffersF7N6, SchaffersF7N10, SchaffersF7N20
+from CostFunctions.CompositeGriewankRosnbrockF8F2 import CompositeGriewankRosnbrockF8F2N2, CompositeGriewankRosnbrockF8F2N6, CompositeGriewankRosnbrockF8F2N10, CompositeGriewankRosnbrockF8F2N20
+from CostFunctions.LunacekBiRastrigin import LunacekBiRastriginN2, LunacekBiRastriginN6, LunacekBiRastriginN10, LunacekBiRastriginN20
+# Have non listed  number of optimal
+# Gallaghers 21 and 101
+# Katsuura
 
 all_benchmarks = [
     # 'simpleQuadratic',
-    'Ackley1N2','Ackley1N6','Ackley1N10', 'Ackley1N20',
+    'Ackley1N2','Ackley1N6','Ackley1N10', #'Ackley1N20',
     'Ackley2',
     'Ackley3',
     'Adjiman',
-    'Alpine1N2', 'Alpine1N6', 'Alpine1N10', 'Alpine1N20',
+    'Alpine1N2', 'Alpine1N6', 'Alpine1N10', #'Alpine1N20',
     'Alpine2',
     'BartelsConn',
     'Beale',
@@ -179,7 +210,7 @@ all_benchmarks = [
     'Easom',
     'Miele',
     'Paviani',
-    'RosenbrockN2','RosenbrockN6', 'RosenbrockN10', 'RosenbrockN20',
+    'RosenbrockN2','RosenbrockN6', 'RosenbrockN10', #'RosenbrockN20',
     'RosenbrockModified',
     'ThreeHumpCamelBack',
     'SixHumpCamelBack',
@@ -196,28 +227,28 @@ all_benchmarks = [
     'Bunkin4',
     'Bunkin6',
     'Chichinadze',
-    'ChungReynoldsN2','ChungReynoldsN6','ChungReynoldsN10','ChungReynoldsN20',
+    'ChungReynoldsN2','ChungReynoldsN6','ChungReynoldsN10',#'ChungReynoldsN20',
     'Colville',
     'Corana',
-    'CosineMixtureN2', 'CosineMixtureN6', 'CosineMixtureN10', 'CosineMixtureN20',
+    'CosineMixtureN2', 'CosineMixtureN6', 'CosineMixtureN10', #'CosineMixtureN20',
     'CrossInTray',
-    'CsendesN2','CsendesN6','CsendesN10','CsendesN20',
+    'CsendesN2','CsendesN6','CsendesN10',#'CsendesN20',
     'Cube',
     'Damavandi',
     'DeckkersAarts',
-    'DixonPriceN2', 'DixonPriceN6', 'DixonPriceN10', 'DixonPriceN20',
+    'DixonPriceN2', 'DixonPriceN6', 'DixonPriceN10', #'DixonPriceN20',
     'Dolan',
     'DeVilliersGlasser01',
     'DeVilliersGlasser02',
     'ElAttarVidyasagarDutta',
     'EggCrate',
     'EggHolder',
-    'ExponentialN2','ExponentialN6','ExponentialN10','ExponentialN20',
+    'ExponentialN2','ExponentialN6','ExponentialN10',#'ExponentialN20',
     'Exp2',
     'FreudensteinRoth',
     'Giunta',
     'GoldsteinPrice',
-    'GriewankN2','GriewankN6','GriewankN10','GriewankN20',
+    'GriewankN2','GriewankN6','GriewankN10',#'GriewankN20',
     'GulfResearch',
     'Hansen',
     'Hartman3',
@@ -232,25 +263,25 @@ all_benchmarks = [
     'Leon',
     'Matyas',
     'McCormick',
-    'Mishra1N2', 'Mishra1N6', 'Mishra1N10', 'Mishra1N20',
-    'Mishra2N2', 'Mishra2N6', 'Mishra2N10', 'Mishra2N20',
+    'Mishra1N2', 'Mishra1N6', 'Mishra1N10', #'Mishra1N20',
+    'Mishra2N2', 'Mishra2N6', 'Mishra2N10', #'Mishra2N20',
     'Mishra3',
     'Mishra4',
     'Mishra5',
     'Mishra6',
-    'Mishra7N2', 'Mishra7N6', 'Mishra7N10', 'Mishra7N20',
+    'Mishra7N2', 'Mishra7N6', 'Mishra7N10', #'Mishra7N20',
     'Mishra8',
     'Mishra9',
     'Mishra10a',
     'Mishra10b',
-    'Mishra11N2', 'Mishra11N6', 'Mishra11N10', 'Mishra11N20',
+    'Mishra11N2', 'Mishra11N6', 'Mishra11N10', #'Mishra11N20',
     'Parsopoulos',
     'PenHolder',
-    'PathologicalN2', 'PathologicalN6', 'PathologicalN10', 'PathologicalN20',
-    'PinterN2', 'PinterN6', 'PinterN10', 'PinterN20',
+    'PathologicalN2', 'PathologicalN6', 'PathologicalN10', #'PathologicalN20',
+    'PinterN2', 'PinterN6', 'PinterN10', #'PinterN20',
     'Periodic',
     'PowellSingular',
-    'PowellSumN2', 'PowellSumN6', 'PowellSumN10', 'PowellSumN20',
+    'PowellSumN2', 'PowellSumN6', 'PowellSumN10', #'PowellSumN20',
     'Price1',
     'Price2',
     'Price3',
@@ -258,56 +289,115 @@ all_benchmarks = [
     # 'Ripple1N2', 'Ripple1N6', 'Ripple1N10', 'Ripple1N20', # Problems in finding the minimum (there are others)
     # 'Ripple25N2', 'Ripple25N6', 'Ripple25N10', 'Ripple25N20', # Problems in finding the minimum (there are others)
     'RotatedEllipse',
-    'QingN2', 'QingN6', 'QingN10', 'QingN20',
+    'QingN2', 'QingN6', 'QingN10', #'QingN20',
     'Quadratic',
-    'QuinticN2', 'QuinticN6', 'QuinticN10', 'QuinticN20',
-    'QuarticN2', 'QuarticN6', 'QuarticN10', 'QuarticN20',
+    'QuinticN2', 'QuinticN6', 'QuinticN10',# 'QuinticN20',
+    'QuarticN2', 'QuarticN6', 'QuarticN10',# 'QuarticN20',
     'RotatedEllipse2',
     # 'Rump' , # Problems in finding the minimum (there are others)
-    'SalomonN2', 'SalomonN6', 'SalomonN10', 'SalomonN20',
-    'SarganN2', 'SarganN6', 'SarganN10', 'SarganN20',
+    'SalomonN2', 'SalomonN6', 'SalomonN10', #'SalomonN20',
+    'SarganN2', 'SarganN6', 'SarganN10', #'SarganN20',
     'Scahffer1',
     'Scahffer2',
     'Scahffer3',
     'Scahffer4',
-    'SchumerSteiglitzN2', 'SchumerSteiglitzN6', 'SchumerSteiglitzN10', 'SchumerSteiglitzN20',
-    'SchwefelN2', 'SchwefelN6', 'SchwefelN10', 'SchwefelN20',
-    'Schwefel1d2N2', 'Schwefel1d2N6', 'Schwefel1d2N10', 'Schwefel1d2N20',
-    'Schwefel2d4N2', 'Schwefel2d4N6', 'Schwefel2d4N10', 'Schwefel2d4N20',
+    'SchumerSteiglitzN2', 'SchumerSteiglitzN6', 'SchumerSteiglitzN10', #'SchumerSteiglitzN20',
+    'SchwefelN2', 'SchwefelN6', 'SchwefelN10', #'SchwefelN20',
+    'Schwefel1d2N2', 'Schwefel1d2N6', 'Schwefel1d2N10', #'Schwefel1d2N20',
+    'Schwefel2d4N2', 'Schwefel2d4N6', 'Schwefel2d4N10', #'Schwefel2d4N20',
     'Schwefel2d6',
-    'Schwefel2d20N2', 'Schwefel2d20N6', 'Schwefel2d20N10', 'Schwefel2d20N20',
-    'Schwefel2d21N2', 'Schwefel2d21N6', 'Schwefel2d21N10', 'Schwefel2d21N20',
-    'Schwefel2d22N2', 'Schwefel2d22N6', 'Schwefel2d22N10', 'Schwefel2d22N20',
-    'Schwefel2d23N2', 'Schwefel2d23N6', 'Schwefel2d23N10', 'Schwefel2d23N20',
-    'Schwefel2d26N2', 'Schwefel2d26N6', 'Schwefel2d26N10', 'Schwefel2d26N20',
+    'Schwefel2d20N2', 'Schwefel2d20N6', 'Schwefel2d20N10', #'Schwefel2d20N20',
+    'Schwefel2d21N2', 'Schwefel2d21N6', 'Schwefel2d21N10', #'Schwefel2d21N20',
+    'Schwefel2d22N2', 'Schwefel2d22N6', 'Schwefel2d22N10', #'Schwefel2d22N20',
+    'Schwefel2d23N2', 'Schwefel2d23N6', 'Schwefel2d23N10', #'Schwefel2d23N20',
+    'Schwefel2d26N2', 'Schwefel2d26N6', 'Schwefel2d26N10', #'Schwefel2d26N20',
     'Schwefel2d36',
     'Shekel5',
     'Shekel7',
     'Shekel10',
     'Shubert',
     'SchafferF6',
-    'SphereN2', 'SphereN6', 'SphereN10', 'SphereN20',
+    'SphereN2', 'SphereN6', 'SphereN10', #'SphereN20',
     # 'StepN2', 'StepN6', 'StepN10', 'StepN20',
     # 'Step2N2', 'Step2N6', 'Step2N10', 'Step2N20',
     # 'Step3N2', 'Step3N6', 'Step3N10', 'Step3N20',
     'StrechedVSineWave2N',
-    'SumSquaresN2', 'SumSquaresN6', 'SumSquaresN10', 'SumSquaresN20',
+    'SumSquaresN2', 'SumSquaresN6', 'SumSquaresN10', #'SumSquaresN20',
     'StyblinkskiTang',
     'Table1',
     'Table2',
     'Table3',
     'TesttubeHolder',
     'Trefethen',
-    'Trigonometric1N2', 'Trigonometric1N6', 'Trigonometric1N10', 'Trigonometric1N20',
-    'Trigonometric2N2', 'Trigonometric2N6', 'Trigonometric2N10', 'Trigonometric2N20',
+    'Trigonometric1N2', 'Trigonometric1N6', 'Trigonometric1N10', #'Trigonometric1N20',
+    'Trigonometric2N2', 'Trigonometric2N6', 'Trigonometric2N10', #'Trigonometric2N20',
     'Tripod',
     'Ursem1',
     'Ursem3',
     'Ursem4',
     'UrsemWaves',
     'VenterSobiezcczanskiSobieski',
-    'Watson'
-    ]
+    'Watson',
+    'WayburnSeader1',
+    'WayburnSeader2',
+    'WayburnSeader3',
+    'WWavyN2', 'WWavyN6', 'WWavyN10', #'WWavyN20',
+    'WeierstrassN2',
+    'WhitleyN2', 'WhitleyN6', 'WhitleyN10', #'WhitleyN20',
+    'Wolfe',
+    'XinSheYang1N2', 'XinSheYang1N6', 'XinSheYang1N10', #'XinSheYang1N20',
+    'XinSheYang2N2', 'XinSheYang2N6', 'XinSheYang2N10', #'XinSheYang2N20',
+    'XinSheYang3N2', 'XinSheYang3N6', 'XinSheYang3N10',# 'XinSheYang3N20',
+    'ZakharovN2', 'ZakharovN6', 'ZakharovN10', #'ZakharovN20',
+    'Zettl',
+    'Zirilli',
+    'EllipsoidalN2', 'EllipsoidalN6', 'EllipsoidalN10', #'EllipsoidalN20',
+    'RastriginN2', 'RastriginN6', 'RastriginN10', #'RastriginN20',
+    'BucheRastriginN2', 'BucheRastriginN6', 'BucheRastriginN10', #'BucheRastriginN20',
+    'LinearSlopeN2','LinearSlopeN6','LinearSlopeN10', #'LinearSlopeN20',
+    'AttractiveSectorN2', 'AttractiveSectorN6', 'AttractiveSectorN10', #'AttractiveSectorN20',
+    'StepEllipsoidalN2', 'StepEllipsoidalN6', 'StepEllipsoidalN10', #'StepEllipsoidalN20',
+    'RosenbrockRotatedN2', 'RosenbrockRotatedN6', 'RosenbrockRotatedN10', #'RosenbrockRotatedN20',
+    'DiscusN2', 'DiscusN6', 'DiscusN10', #'DiscusN20',
+    'BentCigarN2', 'BentCigarN6', 'BentCigarN10', #'BentCigarN20',
+    'SharpRidgeN2', 'SharpRidgeN6', 'SharpRidgeN10', #'SharpRidgeN20',
+    'DifferentPowersN2', 'DifferentPowersN6', 'DifferentPowersN10',# 'DifferentPowersN20',
+    'SchaffersF7N2', 'SchaffersF7N6', 'SchaffersF7N10', #'SchaffersF7N20',
+    'CompositeGriewankRosnbrockF8F2N2', 'CompositeGriewankRosnbrockF8F2N6', 'CompositeGriewankRosnbrockF8F2N10', #'CompositeGriewankRosnbrockF8F2N20',
+    'LunacekBiRastriginN2', 'LunacekBiRastriginN6', 'LunacekBiRastriginN10', #'LunacekBiRastriginN20',
+]
+
+
+bbob = [
+    'WeierstrassN2',
+    'SphereN2', 'SphereN6', 'SphereN10', #'SphereN20',
+    'EllipsoidalN2', 'EllipsoidalN6', 'EllipsoidalN10', #'EllipsoidalN20',
+    'RosenbrockN2','RosenbrockN6', 'RosenbrockN10',# 'RosenbrockN20',
+    'RastriginN2', 'RastriginN6', 'RastriginN10',# 'RastriginN20',
+    'SchwefelN2', 'SchwefelN6', 'SchwefelN10',# 'SchwefelN20',
+    'BucheRastriginN2', 'BucheRastriginN6', 'BucheRastriginN10', #'BucheRastriginN20',
+    'LinearSlopeN2','LinearSlopeN6','LinearSlopeN10',#'LinearSlopeN20',
+    'AttractiveSectorN2', 'AttractiveSectorN6', 'AttractiveSectorN10', #'AttractiveSectorN20',
+    'StepEllipsoidalN2', 'StepEllipsoidalN6', 'StepEllipsoidalN10', #'StepEllipsoidalN20',
+    'RosenbrockRotatedN2', 'RosenbrockRotatedN6', 'RosenbrockRotatedN10', #'RosenbrockRotatedN20',
+    'DiscusN2', 'DiscusN6', 'DiscusN10', #'DiscusN20',
+    'BentCigarN2', 'BentCigarN6', 'BentCigarN10', #'BentCigarN20',
+    'SharpRidgeN2', 'SharpRidgeN6', 'SharpRidgeN10', #'SharpRidgeN20',
+    'DifferentPowersN2', 'DifferentPowersN6', 'DifferentPowersN10', #'DifferentPowersN20',
+    'SchaffersF7N2', 'SchaffersF7N6', 'SchaffersF7N10', #'SchaffersF7N20',
+    'CompositeGriewankRosnbrockF8F2N2', 'CompositeGriewankRosnbrockF8F2N6', 'CompositeGriewankRosnbrockF8F2N10', #'CompositeGriewankRosnbrockF8F2N20',
+    'LunacekBiRastriginN2', 'LunacekBiRastriginN6', 'LunacekBiRastriginN10', #'LunacekBiRastriginN20',
+]
+
+nobbob = [x for x in all_benchmarks if x not in bbob]
+
+# all_benchmarks = paper_nobbob + bbob
+smalltest = ['SphereN2',
+             'SphereN6',
+             'SphereN10',
+             #'SphereN20'
+             ]
+
 
 all_variables = copy.copy(all_benchmarks)
 all_variables.append('all_benchmarks')

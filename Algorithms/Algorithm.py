@@ -2,6 +2,7 @@ import numpy as np
 import logging
 from timeit import default_timer as timer
 logger = logging.getLogger(__name__)
+logger.propagate = False
 from abc import ABC, abstractmethod
 from multiprocessing import Process, Queue
 

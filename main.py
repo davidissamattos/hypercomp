@@ -9,7 +9,7 @@ import colorlog
 
 from tqdm import tqdm
 
-from CostFunctions import all_benchmarks as bm
+from CostFunctions import bbob, smalltest, nobbob, all_benchmarks
 from Comparator import *
 
 if sys.version_info[0] < 3:
@@ -23,6 +23,7 @@ def setLogLevels(loglevel, usegcp):
         client = google.cloud.logging.Client()
         client.setup_logging()
         handler = CloudLoggingHandler(client)
+
     else:
         handler = logging.StreamHandler()
         LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
@@ -30,15 +31,11 @@ def setLogLevels(loglevel, usegcp):
 
     # Specifying which files I want with log levels
     logger = logging.getLogger(__name__)
-    algorithm_logger = logging.getLogger('Algorithm')
+    algorithm_logger = logging.getLogger('Algorithms')
     costfunctions_logger = logging.getLogger('CostFunctions')
     comparator_logger = logging.getLogger('Comparator')
 
-    # removing progagation from loggers
-    logger.propagate = False
-    algorithm_logger.propagate = False
-    costfunctions_logger.propagate = False
-    comparator_logger.propagate = False
+
     loglevel = loglevel.lower()
     if loglevel == 'debug':
         LOG_LEVEL = logging.DEBUG
@@ -53,10 +50,19 @@ def setLogLevels(loglevel, usegcp):
     else:
         LOG_LEVEL = logging.INFO
     print('Using log level type: ' + loglevel)
+
     logger.setLevel(LOG_LEVEL)
     algorithm_logger.setLevel(LOG_LEVEL)
     costfunctions_logger.setLevel(LOG_LEVEL)
     comparator_logger.setLevel(LOG_LEVEL)
+
+    loggers_to_shut_up = [
+        "hyperopt.tpe",
+        "hyperopt.fmin",
+        "hyperopt.pyll.base",
+    ]
+    for l in loggers_to_shut_up:
+        logging.getLogger(l).setLevel(logging.ERROR)
 
     # handlers
     logger.addHandler(handler)
@@ -64,13 +70,21 @@ def setLogLevels(loglevel, usegcp):
     costfunctions_logger.addHandler(handler)
     comparator_logger.addHandler(handler)
 
+    # removing progagation from loggers
+    logger.propagate = False
+    algorithm_logger.propagate = False
+    costfunctions_logger.propagate = False
+    comparator_logger.propagate = False
 
-
-
+#Main function that is called
 def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
         funcrange_max, func, timeout, loglevel,nfevalbydimensions,algorithmgroup):
     # configuring log level
     # levels per file
+    if usegcp:
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './gcpcredentials.json'
+        logger.info('Using GCP')
+
     setLogLevels(loglevel,usegcp)
 
     # defining the scope of functions to run
@@ -83,12 +97,18 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
     if funcrange_min == None or funcrange_max == None:
         if func == 'all' or func == None:
             logger.info('Using all benchmark functions')
-            benchmark = bm
-        elif func in bm:
+            benchmark = all_benchmarks
+        elif func == 'bbob':
+            benchmark = bbob
+        elif func == 'smalltest':
+            benchmark = smalltest
+        elif func == 'nobbob':
+            benchmark = nobbob
+        elif func in all_benchmarks:
             benchmark = [func]
             logger.info('Using only functions : '+str(benchmark))
         else:
-            logger.error('The function selected is not valid. It should be included in: ' + str(bm))
+            logger.error('The function selected is not valid. It should be included in: ' + str(all_benchmarks))
             raise Exception
     else:
         minRange = funcrange_min
@@ -96,23 +116,19 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
         if minRange == None:
             minRange = 0
         if maxRange == None:
-            maxRange = len(bm)
+            maxRange = len(all_benchmarks)
         minRange = int(minRange)
         maxRange = int(maxRange)
         if minRange < 0:
             logger.error("Minimum range value should be 0")
             raise Exception
-        elif maxRange > len(bm):
-            logger.error("Maximum range value should smaller or equal: " + str(len(bm)))
+        elif maxRange > len(all_benchmarks):
+            logger.error("Maximum range value should smaller or equal: " + str(len(all_benchmarks)))
             raise Exception
         else:
             logger.info('Using only functions in range: ' + str(minRange) + ' ' + str(maxRange))
-            benchmark = bm[minRange:maxRange]
+            benchmark = all_benchmarks[minRange:maxRange]
             logger.info('Using benchmark functions : ' + str(benchmark))
-
-    if usegcp:
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './gcpcredentials.json'
-        logger.info('Using GCP')
 
     logger.info('Using timeout of :' +str(timeout))
     for cname in tqdm(benchmark):
@@ -133,10 +149,10 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
         sim.run()
 
 
+#for command line
 @click.group()
 def hypercomp():
     pass
-
 
 # this command we run passing everything as command line arguments in the local pc
 @hypercomp.command()
@@ -155,7 +171,7 @@ def hypercomp():
 @click.option('--funcrange_max', required=False, type=int,
               help='Specify the max range of the list of functions that we will run.  Varies from 0 to ?. Values should be an integer')
 @click.option('--func', default='all', required=False, type=str,
-              help='Specify only one the available cost functions by the name or all for all functions')
+              help='Specify only one the available cost functions by the name, all for all functions or a specific name defined in the init file of the cost functions e.g. bbob')
 @click.option('--timeout', default=15, required=False, type=int,
               help='Time in minutes. Specify the timeout for one algorithm to optimize one function. Default is 15min.')
 @click.option('--loglevel', default='info', required=False, type=str,
@@ -190,26 +206,32 @@ def runenv():
     sd = os.environ.get('HYPERCOMP_SD')
     if sd is not None:
         sd = float(sd)
+    else:
+        sd=0
 
     maxfeval = os.environ.get('HYPERCOMP_MAXFEVAL')
     if maxfeval is not None:
         maxfeval=int(maxfeval)
+    else:
+        maxfeval=1
 
     path = os.environ.get('HYPERCOMP_PATH')
     if path is not None:
         path=str(path)
+    else:
+        path='data'
 
     nsim = os.environ.get('HYPERCOMP_NSIM')
     if nsim is not None:
         nsim = int(nsim)
+    else:
+        nsim=1
 
     usegcp = os.environ.get('HYPERCOMP_USEGCP')
     if usegcp is not None:
         usegcp=bool(usegcp)
-
-    bucketname = os.environ.get('GCP_BUCKET')
-    if bucketname is not None:
-        bucketname =str(bucketname)
+    else:
+        usegcp=False
 
     funcrange_min = os.environ.get('HYPERCOMP_FUNCRANGE_MIN')
     if funcrange_min is not None:
@@ -220,24 +242,57 @@ def runenv():
         funcrange_max = int(funcrange_max)
 
     func = os.environ.get('HYPERCOMP_FUNC')
+    print(func)
     if func is not None:
         func=str(func)
+    else:
+        func='all'
 
     timeout = os.environ.get('HYPERCOMP_TIMEOUT')
     if timeout is not None:
         timeout=float(timeout)
+    else:
+        timeout=5
 
     loglevel = os.environ.get('HYPERCOMP_LOGLEVEL')
     if loglevel is not None:
-        loglevel=str(loglevel)
+        loglevel = str(loglevel)
+    else:
+        loglevel = 'info'
 
     nfevalbydimensions = os.environ.get('HYPERCOMP_NFEVALBYDIMENSIONS')
     if nfevalbydimensions is not None:
         nfevalbydimensions = bool(nfevalbydimensions)
+    else:
+        nfevalbydimensions=False
 
     algorithmgroup = os.environ.get('HYPERCOMP_ALGORITHMGROUP')
     if algorithmgroup is not None:
         algorithmgroup = str(algorithmgroup)
+    else:
+        algorithmgroup = 'no_bayesian'
+
+    bucketname = os.environ.get('GCP_BUCKET')
+    if bucketname is not None:
+        bucketname = str(bucketname)
+
+    simproperties={
+                'sd' : sd,
+                'maxfeval' : maxfeval,
+                'path' : path,
+                'nsim' : nsim,
+                'usegcp' : usegcp,
+                'bucketname' : bucketname,
+                'funcrange_min' : funcrange_min,
+                'funcrange_max' : funcrange_max,
+                'func' : func,
+                'timeout' : timeout,
+                'loglevel' : loglevel,
+                'nfevalbydimensions' : nfevalbydimensions,
+                'algorithmgroup' : algorithmgroup}
+
+    print('Running with simulator with properties: ',
+          simproperties)
 
     run(sd=sd,
         maxfeval=maxfeval,
@@ -267,13 +322,15 @@ def runenv():
             zone=zone,
             instance=instance_name).execute()
 
+    #after we run we delete instances if we have any
     time.sleep(60)
     cleanUpGCP()
 
 
 @hypercomp.command()
 def listAllFunctions():
-    print('The benchmark functions available at the moment are: ', bm)
+    print('There are: ', len(all_benchmarks), " benchmark functions")
+    print('The benchmark functions available are: ', all_benchmarks)
 
 
 if __name__ == "__main__":

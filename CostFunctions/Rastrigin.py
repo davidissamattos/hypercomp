@@ -1,25 +1,36 @@
+"""
+Implementation of the Rastrigin function
+
+# Created by davidis at 2020-02-26
+"""
+
 from CostFunctions import CostFunctions
+from CostFunctions.BBOBAuxFunctions import *
 import numpy as np
 
-__all__ = ['RosenbrockN2','RosenbrockN6','RosenbrockN10','RosenbrockN20']
+__all__ = ['RastriginN2', 'RastriginN6', 'RastriginN10', 'RastriginN20']
 
 
-class Rosenbrock(CostFunctions):
+class Rastrigin(CostFunctions):
+    """
+    Implementation of the Rastrigin function from
+    M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
+    """
     functionProperties = {
         'minimumValue': 0,
-        'optimalArms_SingleDimension': 1,
-        'searchSpace_SingleDimension': [-30, 10],
+        'optimalArms_SingleDimension': 0,
+        'searchSpace_SingleDimension': [-1, 1],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-30, 10),
+        'x0_SingleDimension': np.random.uniform(-1, 1),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
         'Scalability': 'Scalable',
-        'Modality': 'Unimodal',
-        'BBOB': 'True'
+        'Modality': 'Multimodal',
+        'BBOB': 'True',
     }
 
-    def __init__(self, functionProperties, N = 3, sd=1, maxfeval=10):
+    def __init__(self, functionProperties, N=10, sd=1, maxfeval=10):
         # First we modify the function properties before we initialize the rest
         searchSpace = []
         spaceType = []
@@ -35,40 +46,42 @@ class Rosenbrock(CostFunctions):
         functionProperties['x0'] = x0
         functionProperties['spaceType'] = spaceType
         functionProperties['searchSpace'] = searchSpace
-        functionProperties['Ndimensions'] = N
+        functionProperties['Ndimensions'] = self.N
         super().__init__(functionProperties, sd=sd, maxfeval=maxfeval)
 
     def func(self, x):
-        value = 0
-        
-        for i in range(1,self.N): #one less
-            xi = x[i-1]
-            xiPlus1 = x[i]
-            value = value + 100 * np.power((xiPlus1 - np.power(xi,2)), 2) + np.power((xi - 1),2)
+        x=np.array(x)
+        Gamma = DiagAlpha(10,self.N)
+        tosz = Tosz(x)
+        tasy = Tasy(tosz, 0.2)
+        z = Gamma.dot(tasy)
+        value = 10*(self.N - np.sum(np.cos(2*np.pi*z))) + np.linalg.norm(z)
         return value
 
-class RosenbrockN2(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class RastriginN2(Rastrigin):
+    functionPropertes = Rastrigin.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=2, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN6(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class RastriginN6(Rastrigin):
+    functionProperties = Rastrigin.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=6, sd=sd, maxfeval=maxfeval)
 
-class RosenbrockN10(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class RastriginN10(Rastrigin):
+    functionProperties = Rastrigin.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=10, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN20(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class RastriginN20(Rastrigin):
+    functionProperties = Rastrigin.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=20, sd=sd, maxfeval=maxfeval)

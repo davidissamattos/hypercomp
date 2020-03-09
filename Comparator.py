@@ -73,9 +73,9 @@ class Comparator():
         """
         if self.algorithmgroup == 'all':
             alg_to_run = all_algorithms
-        if self.algorithmgroup == 'niapy':
+        elif self.algorithmgroup == 'niapy':
             alg_to_run = niapy_random_search
-        if self.algorithmgroup == 'no_bayesian':
+        elif self.algorithmgroup == 'no_bayesian':
             alg_to_run = no_bayesian
         else:
             raise ValueError('There is no algorithm class called: ' + self.algorithmgroup)
@@ -86,7 +86,7 @@ class Comparator():
             results = []
             for algname in alg_to_run:
                 module = importlib.import_module('Algorithms')
-                cl = getattr(module, algname)  # cl is a class of the CostFunctions imported dynamically
+                cl = getattr(module, algname)  # cl is a class of the Algorithms imported dynamically
                 result = self.run_algorithm(cl)
                 result['simNumber'] = i
                 results.append(result)
@@ -106,13 +106,23 @@ class Comparator():
         :return:
         """
         #We are adding here as a class variable simply because it is somehow lost in the middle of the calculations the instantiation and reference
+
+        #we initialize as if nfevalbydimensions was False and then we change
         self._objective = self.objFuncClass(functionProperties=self.objFuncClass.functionProperties,
                                       sd=self.sd,
                                       maxfeval=self.maxfeval)
-        algo = algoClass(objective=self._objective,
-                         maxfeval=self.maxfeval)
+
+        # here we take into account the number of dimensions
+        # we need to keep the self.maxfeval parameter constant for the other functions
+        # but we need to initialize the algorithm with the updated maxfeval from the cost function
+        algo_maxfeval=self.maxfeval
         if self.nfevalbydimensions:
-            self._objective.ChangeNFevalToDimensions(k=self.maxfeval)
+            self._objective.ChangeMaxFevalBasedOnDimensions(k=self.maxfeval)
+            algo_maxfeval =self._objective.maxfeval
+
+        algo = algoClass(objective=self._objective,
+                         maxfeval=algo_maxfeval)
+
 
         result = algo.run(timeout=self.timeout)
         return result

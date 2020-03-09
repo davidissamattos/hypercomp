@@ -1,25 +1,35 @@
+"""
+Implementation of the Ellipsoidal function
+
+# Created by davidis at 2020-02-26
+"""
+
 from CostFunctions import CostFunctions
+from CostFunctions.BBOBAuxFunctions import *
 import numpy as np
 
-__all__ = ['RosenbrockN2','RosenbrockN6','RosenbrockN10','RosenbrockN20']
+__all__ = ['EllipsoidalN2', 'EllipsoidalN6', 'EllipsoidalN10', 'EllipsoidalN20']
 
 
-class Rosenbrock(CostFunctions):
+class Ellipsoidal(CostFunctions):
+    """
+   From BBOB
+    """
     functionProperties = {
         'minimumValue': 0,
-        'optimalArms_SingleDimension': 1,
-        'searchSpace_SingleDimension': [-30, 10],
+        'optimalArms_SingleDimension': 0,
+        'searchSpace_SingleDimension': [-10, 5],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-30, 10),
+        'x0_SingleDimension': np.random.uniform(-10, 5),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
         'Scalability': 'Scalable',
-        'Modality': 'Unimodal',
+        'Modality': 'Multimodal',
         'BBOB': 'True'
     }
 
-    def __init__(self, functionProperties, N = 3, sd=1, maxfeval=10):
+    def __init__(self, functionProperties, N=10, sd=1, maxfeval=10):
         # First we modify the function properties before we initialize the rest
         searchSpace = []
         spaceType = []
@@ -35,40 +45,40 @@ class Rosenbrock(CostFunctions):
         functionProperties['x0'] = x0
         functionProperties['spaceType'] = spaceType
         functionProperties['searchSpace'] = searchSpace
-        functionProperties['Ndimensions'] = N
+        functionProperties['Ndimensions'] = self.N
         super().__init__(functionProperties, sd=sd, maxfeval=maxfeval)
 
     def func(self, x):
-        value = 0
-        
-        for i in range(1,self.N): #one less
-            xi = x[i-1]
-            xiPlus1 = x[i]
-            value = value + 100 * np.power((xiPlus1 - np.power(xi,2)), 2) + np.power((xi - 1),2)
+        i = np.arange(1, self.N+1)
+        x = np.array(x)
+        z = Tosz(x)
+        value = np.sum(np.power(10**6,(i-1)/(self.N-1))* z**2)
         return value
 
-class RosenbrockN2(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class EllipsoidalN2(Ellipsoidal):
+    functionProperties = Ellipsoidal.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=2, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN6(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class EllipsoidalN6(Ellipsoidal):
+    functionProperties = Ellipsoidal.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=6, sd=sd, maxfeval=maxfeval)
 
-class RosenbrockN10(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class EllipsoidalN10(Ellipsoidal):
+    functionProperties = Ellipsoidal.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=10, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN20(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class EllipsoidalN20(Ellipsoidal):
+    functionProperties = Ellipsoidal.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=20, sd=sd, maxfeval=maxfeval)

@@ -26,6 +26,7 @@ class TestBenchmark(unittest.TestCase):
             diff = np.abs(value - opt_value)
             msg = 'Function: '+ str(type(obj))+ \
                   ' arm_evaluated: '+ str(xi)+ \
+                  ' optimal arm: ' + str(x) +\
                   ' optimal value: ' + str(opt_value) + \
                   ' obtained value: '+ str(value) + \
                   ' diff: ' + str(diff)

@@ -1,25 +1,35 @@
+"""
+Implementation of the AttractiveSector function
+
+# Created by davidis at 2020-02-26
+"""
+
 from CostFunctions import CostFunctions
+from CostFunctions.BBOBAuxFunctions import *
 import numpy as np
 
-__all__ = ['RosenbrockN2','RosenbrockN6','RosenbrockN10','RosenbrockN20']
+__all__ = ['AttractiveSectorN2', 'AttractiveSectorN6', 'AttractiveSectorN10', 'AttractiveSectorN20']
 
 
-class Rosenbrock(CostFunctions):
+class AttractiveSector(CostFunctions):
+    """
+   From BBOB
+    """
     functionProperties = {
         'minimumValue': 0,
-        'optimalArms_SingleDimension': 1,
-        'searchSpace_SingleDimension': [-30, 10],
+        'optimalArms_SingleDimension': 0,
+        'searchSpace_SingleDimension': [-10, 5],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-30, 10),
+        'x0_SingleDimension': np.random.uniform(-10, 5),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
         'Scalability': 'Scalable',
-        'Modality': 'Unimodal',
+        'Modality': 'Multimodal',
         'BBOB': 'True'
     }
 
-    def __init__(self, functionProperties, N = 3, sd=1, maxfeval=10):
+    def __init__(self, functionProperties, N=10, sd=1, maxfeval=10):
         # First we modify the function properties before we initialize the rest
         searchSpace = []
         spaceType = []
@@ -35,40 +45,50 @@ class Rosenbrock(CostFunctions):
         functionProperties['x0'] = x0
         functionProperties['spaceType'] = spaceType
         functionProperties['searchSpace'] = searchSpace
-        functionProperties['Ndimensions'] = N
+        functionProperties['Ndimensions'] = self.N
         super().__init__(functionProperties, sd=sd, maxfeval=maxfeval)
 
     def func(self, x):
-        value = 0
-        
-        for i in range(1,self.N): #one less
-            xi = x[i-1]
-            xiPlus1 = x[i]
-            value = value + 100 * np.power((xiPlus1 - np.power(xi,2)), 2) + np.power((xi - 1),2)
+        x = np.array(x)
+        Q, R = QR(self.N)
+        Gamma = DiagAlpha(10,self.N)
+        z =Q.dot(Gamma.dot(R.dot(x)))
+        j = 0
+        s=np.zeros(self.N)
+
+        for xi in x:
+            if z[j] * x[j] < 0:
+                s[j] = 100
+            else:
+                s[j] = 1
+            j=j+1
+        value = (Tosz(np.sum((s*z)**2)))**0.9
         return value
 
-class RosenbrockN2(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class AttractiveSectorN2(AttractiveSector):
+    functionProperties = AttractiveSector.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=2, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN6(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class AttractiveSectorN6(AttractiveSector):
+    functionProperties = AttractiveSector.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=6, sd=sd, maxfeval=maxfeval)
 
-class RosenbrockN10(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class AttractiveSectorN10(AttractiveSector):
+    functionProperties = AttractiveSector.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=10, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN20(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class AttractiveSectorN20(AttractiveSector):
+    functionProperties = AttractiveSector.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=20, sd=sd, maxfeval=maxfeval)

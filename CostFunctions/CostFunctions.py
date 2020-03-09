@@ -5,12 +5,12 @@ from utils import *
 import logging
 logger = logging.getLogger(__name__)
 __all__ = ['CostFunctions']
-
+import re
 
 class CostFunctions(ABC):
-    def __init__(self, functionProperties, sd=0, maxfeval=10, tol=0.001):
+    def __init__(self, functionProperties, sd=0, maxfeval=0, tol=0.001):
         # Saving parameters
-        self._maxfevals = maxfeval
+        self.maxfeval = maxfeval
         self.sd = sd
         self.functionProperties = functionProperties
         self.functionProperties['tol'] = tol
@@ -20,7 +20,7 @@ class CostFunctions(ABC):
         self.minimumValue = self.functionProperties['minimumValue']
 
         # Initializing variables
-        self._nfeval = 0
+        self.nfeval = 0
         # Here we log all the parameters that were passed to this function
         self.requestedArms = []
         # Here we log all the output values with noise that the function gives
@@ -56,17 +56,17 @@ class CostFunctions(ABC):
         try:
             xx = convertToArray(x)
             # Verify maximum number of evaluations
-            if self._nfeval > self._maxfevals:
+            if self.nfeval > self.maxfeval:
                 logger.debug('Max iterations were achieved')
                 # raise ValueError("Max iterations allowed is over")
-            self._nfeval = 1 + self._nfeval
-            # print('Final Nfeval: ', self._nfeval)
+            self.nfeval = 1 + self.nfeval
+            # print('Final Nfeval: ', self.nfeval)
             return self.eval(xx)
         except:
             raise ValueError
 
-    def ChangeNFevalToDimensions(self,k):
-        self._nfeval = k*self.functionProperties['Ndimensions']
+    def ChangeMaxFevalBasedOnDimensions(self, k):
+        self.maxfeval = k*self.functionProperties['Ndimensions']
 
     # From this point we verify all the metrics that we want to investigate
     def GetRegret(self):
@@ -135,9 +135,20 @@ class CostFunctions(ABC):
         """
         return str(self.__class__.__name__)
 
+    def GetBaseFunctionClass(self):
+        """
+
+        """
+        s = self.GetCostFunctionName()
+        return re.sub(r'N\d+', '', s)
+
     def GetNFeval(self):
-        # print('Final Nfeval: ',self._nfeval)
-        return self._nfeval
+        # print('Final Nfeval: ',self.nfeval)
+        return self.nfeval
+
+    def GetMaxFeval(self):
+        # print('Final Nfeval: ',self.nfeval)
+        return self.maxfeval
 
     def isBBOB(self):
 
@@ -146,9 +157,22 @@ class CostFunctions(ABC):
             if v is not None:
                 ret = 'True'
         except:
-            ret  = 'False'
+            ret = 'False'
 
         return ret
+
+    def GetSD(self):
+        return self.sd
+
+    def GetFevalPerDimensions(self):
+        N= self.functionProperties['Ndimensions']
+        return self.nfeval/N
+
+    def GetMaxFevalPerDimensions(self):
+        N= self.functionProperties['Ndimensions']
+        return self.maxfeval/N
+
+
 
     def GenerateInfo(self, best_arm, timetocomplete, algorithm_name, success=True):
         """
@@ -172,7 +196,12 @@ class CostFunctions(ABC):
                 'Modality': self.functionProperties['Modality'],
                 'Ndimensions': self.functionProperties['Ndimensions'],
                 'OptimizationSuccessful': success,
-                'BBOB': self.isBBOB()
+                'BBOB': self.isBBOB(),
+                'BaseClass': self.GetBaseFunctionClass(),
+                'SD': self.GetSD(),
+                'MaxFeval': self.GetMaxFeval(),
+                'MaxFevalPerDimensions': self.GetMaxFevalPerDimensions(),
+                'FevalPerDimensions': self.GetFevalPerDimensions()
             }
             logger.info('Results for ' + str(algorithm_name) + ' with cost function ' + str(
                 self.GetCostFunctionName()) + ' were succesfully created')

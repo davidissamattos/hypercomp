@@ -3,7 +3,8 @@ from Algorithms import Algorithm
 from hyperopt import fmin, tpe, hp, rand, atpe
 from utils import *
 import logging
-logger = logging.getLogger('Algorithms')
+logger = logging.getLogger(__name__)
+logger.propagate = False
 
 __all__ = ['RandomSearch','ATPE','TPE']
 

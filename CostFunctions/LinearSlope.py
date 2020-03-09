@@ -1,25 +1,36 @@
+"""
+Implementation of the LinearSlope function
+
+# Created by davidis at 2020-02-27
+"""
+
 from CostFunctions import CostFunctions
 import numpy as np
+from CostFunctions.BBOBAuxFunctions import *
 
-__all__ = ['RosenbrockN2','RosenbrockN6','RosenbrockN10','RosenbrockN20']
+__all__ = ['LinearSlopeN2', 'LinearSlopeN6', 'LinearSlopeN10', 'LinearSlopeN20']
 
 
-class Rosenbrock(CostFunctions):
+class LinearSlope(CostFunctions):
+    """
+    Implementation of the LinearSlope function from
+    M. Jamil and X.-S. S. Yang, “A Literature Survey of Benchmark Functions For Global Optimization Problems,” Int. J. Math. Model. Numer. Optim., vol. 4, no. 2, p. 150, Aug. 2013.
+    """
     functionProperties = {
-        'minimumValue': 0,
-        'optimalArms_SingleDimension': 1,
-        'searchSpace_SingleDimension': [-30, 10],
+        'minimumValue': 0.0,
+        'optimalArms_SingleDimension': 5,
+        'searchSpace_SingleDimension': [-5, 5],
         'spaceType_SingleDimension': 'uniform',
-        'x0_SingleDimension': np.random.uniform(-30, 10),
+        'x0_SingleDimension': np.random.uniform(-5, 5),
         'Continuous': 'Continuous',
         'Differentiability': 'Differentiable',
         'Separability': 'Non-Separable',
         'Scalability': 'Scalable',
-        'Modality': 'Unimodal',
+        'Modality': 'Multimodal',
         'BBOB': 'True'
     }
 
-    def __init__(self, functionProperties, N = 3, sd=1, maxfeval=10):
+    def __init__(self, functionProperties, N=10, sd=1, maxfeval=10):
         # First we modify the function properties before we initialize the rest
         searchSpace = []
         spaceType = []
@@ -35,40 +46,49 @@ class Rosenbrock(CostFunctions):
         functionProperties['x0'] = x0
         functionProperties['spaceType'] = spaceType
         functionProperties['searchSpace'] = searchSpace
-        functionProperties['Ndimensions'] = N
+        functionProperties['Ndimensions'] = self.N
         super().__init__(functionProperties, sd=sd, maxfeval=maxfeval)
 
     def func(self, x):
-        value = 0
-        
-        for i in range(1,self.N): #one less
-            xi = x[i-1]
-            xiPlus1 = x[i]
-            value = value + 100 * np.power((xiPlus1 - np.power(xi,2)), 2) + np.power((xi - 1),2)
+        x=np.array(x)
+        xopt =  self.functionProperties['optimalArms'][0]
+        z = np.zeros(self.N)
+        s = np.zeros(self.N)
+        i=1
+        j=0
+        for xi in x:
+            if xi*xopt[j]<25:
+                z[j]= xi
+            else:
+                z[j]=xopt[j]
+            s[j]=np.sign(xopt[j])*np.power(10, (i-1)/(self.N-1))
+        value = np.sum(5*np.abs(s) - s*z)
         return value
 
-class RosenbrockN2(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class LinearSlopeN2(LinearSlope):
+    functionProperties = LinearSlope.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=2, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN6(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class LinearSlopeN6(LinearSlope):
+    functionProperties = LinearSlope.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=6, sd=sd, maxfeval=maxfeval)
 
-class RosenbrockN10(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+
+class LinearSlopeN10(LinearSlope):
+    functionProperties = LinearSlope.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=10, sd=sd, maxfeval=maxfeval)
 
 
-class RosenbrockN20(Rosenbrock):
-    functionProperties = Rosenbrock.functionProperties
+class LinearSlopeN20(LinearSlope):
+    functionProperties = LinearSlope.functionProperties
 
     def __init__(self, functionProperties, sd=1, maxfeval=10):
         super().__init__(functionProperties, N=20, sd=sd, maxfeval=maxfeval)
