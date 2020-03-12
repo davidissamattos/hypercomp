@@ -14,7 +14,7 @@ gcloud beta compute instances create-with-container $1 \
   --metadata=google-logging-enabled=true \
   --service-account=script@hypercomp.iam.gserviceaccount.com \
   --scopes=https://www.googleapis.com/auth/cloud-platform \
-  --image=cos-stable-80-12739-78-0 \
+  --image=cos-stable-80-12739-91-0 \
   --image-project=cos-cloud \
   --container-privileged \
   --container-env GCP_INSTANCE_NAME=$1 \

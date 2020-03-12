@@ -9,7 +9,7 @@ import colorlog
 
 from tqdm import tqdm
 
-from CostFunctions import bbob, smalltest, nobbob, all_benchmarks
+from CostFunctions import bbob, bbob_no_n10, smalltest, nobbob, set1, set2,  set3, set4, set5, set6, all_benchmarks
 from Comparator import *
 
 if sys.version_info[0] < 3:
@@ -100,6 +100,20 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
             benchmark = all_benchmarks
         elif func == 'bbob':
             benchmark = bbob
+        elif func == 'set1':
+            benchmark = set1
+        elif func == 'set2':
+            benchmark = set2
+        elif func == 'set3':
+            benchmark = set3
+        elif func == 'set4':
+            benchmark = set4
+        elif func == 'set5':
+            benchmark = set5
+        elif func == 'set6':
+            benchmark = set6
+        elif func == 'bbob_no_n10':
+            benchmark = bbob_no_n10
         elif func == 'smalltest':
             benchmark = smalltest
         elif func == 'nobbob':

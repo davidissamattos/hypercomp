@@ -1,9 +1,7 @@
-FROM ubuntu:bionic
-LABEL maintainer="issamattos.david@gmail.com"
-ENV LANG C.UTF-8
+FROM davidissamattos/hypercomp_base
 
-COPY . /hypercomp
+RUN mkdir hypercomp
 WORKDIR hypercomp
+COPY . .
 
-RUN ./setup.sh .
 ENTRYPOINT ["python3", "main.py"]

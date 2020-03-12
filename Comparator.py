@@ -8,7 +8,7 @@ from tqdm import tqdm
 #GoogleCloud bucket
 from google.cloud import storage
 # say where your private key to google cloud exists
-from Algorithms import all_algorithms, niapy_random_search, no_bayesian
+from Algorithms import all_algorithms, niapy_random_search, no_bayesian, bayes_only, mlghoo, hpbandster
 
 class Comparator():
     """
@@ -73,10 +73,16 @@ class Comparator():
         """
         if self.algorithmgroup == 'all':
             alg_to_run = all_algorithms
-        elif self.algorithmgroup == 'niapy':
+        elif self.algorithmgroup == 'niapy_random_search':
             alg_to_run = niapy_random_search
         elif self.algorithmgroup == 'no_bayesian':
             alg_to_run = no_bayesian
+        elif self.algorithmgroup == 'mlghoo':
+            alg_to_run = mlghoo
+        elif self.algorithmgroup == 'bayes_only':
+            alg_to_run = bayes_only
+        elif self.algorithmgroup == 'hpbandster':
+            alg_to_run = hpbandster
         else:
             raise ValueError('There is no algorithm class called: ' + self.algorithmgroup)
         #tqdm is just to create a progress bar

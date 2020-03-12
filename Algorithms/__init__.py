@@ -44,6 +44,8 @@ niapy = [ 'NiaPyABC',
 
 niapy_random_search = niapy + random_search
 
+bayes_only = hpbandster + smac + bayesian
+
 no_bayesian = niapy + random_search + tpe + others + mlghoo
 
 all_algorithms = bayesian + mlghoo + others + smac + hpbandster + tpe + random_search + niapy
