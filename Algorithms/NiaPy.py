@@ -44,16 +44,16 @@ class NiaPy(Algorithm):
             raise Exception('NiaPy does not have algorithm :' + str(algorithm_name))
 
         elif self.algorithm_name == 'NiaPyABC':
-            self.algo = ArtificialBeeColonyAlgorithm(NP=population, Limit=2)
+            self.algo = ArtificialBeeColonyAlgorithm(NP=population, Limit=100)
 
         elif self.algorithm_name == 'NiaPyBat':
             self.algo = BatAlgorithm(NP=population)
 
         elif self.algorithm_name == 'NiaPyCuckooSearch':
-            self.algo = CuckooSearch(N=population, pa=0.25, alpha=0.01)
+            self.algo = CuckooSearch(N=population, pa=0.2, alpha=0.5)
 
         elif self.algorithm_name == 'NiaPyDifferentialEvolution':
-            self.algo = DifferentialEvolution(NP=population, F=1, CR=0.7)  # default from the paper
+            self.algo = DifferentialEvolution(NP=population, F=1, CR=0.8)
 
         elif self.algorithm_name == 'NiaPyFireflyAlgorithm':
             self.algo = FireflyAlgorithm(NP=population, alpha=0.5, betamin=0.2, gamma=1.0)
@@ -66,10 +66,10 @@ class NiaPy(Algorithm):
             self.algo = GreyWolfOptimizer(NP=population)
         # config
         elif self.algorithm_name == 'NiaPyNelderMead':
-            self.algo = NelderMeadMethod(NP=population)
+            self.algo = NelderMeadMethod()
         # config
         elif self.algorithm_name == 'NiaPyPSO':
-            self.algo = ParticleSwarmAlgorithm(NP=population, C1=2, C2=2, w=0.9, vMin=1.5, vMax=1.5)
+            self.algo = ParticleSwarmAlgorithm(NP=population, C1=2, C2=2, w=0.9, vMin=-1.5, vMax=1.5)
 
 
         # config

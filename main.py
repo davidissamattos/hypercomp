@@ -9,7 +9,7 @@ import colorlog
 
 from tqdm import tqdm
 
-from CostFunctions import bbob, bbob_no_n10, smalltest, nobbob, set1, set2,  set3, set4, set5, set6, all_benchmarks
+from CostFunctions import all_benchmarks, bbob, bbob_no_n10, smalltest, nobbob, set1, set1_non10, set2, set2_non10,  set3, set3_non10, set4, set4_non10, set5, set5_non10, set6, set6_non10, rerun, rerun_non10
 from Comparator import *
 
 if sys.version_info[0] < 3:
@@ -17,17 +17,22 @@ if sys.version_info[0] < 3:
 
 
 def setLogLevels(loglevel, usegcp):
-    if usegcp:
-        import google.cloud.logging
-        from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
-        client = google.cloud.logging.Client()
-        client.setup_logging()
-        handler = CloudLoggingHandler(client)
+    # if usegcp:
+    #
+    #     import google.cloud.logging
+    #     from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+    #     client = google.cloud.logging.Client()
+    #     client.setup_logging()
+    #     handler = CloudLoggingHandler(client)
+    #
+    # else:
+    #     handler = logging.StreamHandler()
+    #     LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
+    #     handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
 
-    else:
-        handler = logging.StreamHandler()
-        LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
-        handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
+    handler = logging.StreamHandler()
+    LOGFORMAT = "  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s"
+    handler.setFormatter(colorlog.ColoredFormatter(LOGFORMAT))
 
     # Specifying which files I want with log levels
     logger = logging.getLogger(__name__)
@@ -112,12 +117,28 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
             benchmark = set5
         elif func == 'set6':
             benchmark = set6
+        elif func == 'set1_non10':
+            benchmark = set1_non10
+        elif func == 'set2_non10':
+            benchmark = set2_non10
+        elif func == 'set3_non10':
+            benchmark = set3_non10
+        elif func == 'set4_non10':
+            benchmark = set4_non10
+        elif func == 'set5_non10':
+            benchmark = set5_non10
+        elif func == 'set6_non10':
+            benchmark = set6_non10
         elif func == 'bbob_no_n10':
             benchmark = bbob_no_n10
         elif func == 'smalltest':
             benchmark = smalltest
         elif func == 'nobbob':
             benchmark = nobbob
+        elif func == 'rerun':
+            benchmark = rerun
+        elif func == 'rerun_non10':
+            benchmark = rerun_non10
         elif func in all_benchmarks:
             benchmark = [func]
             logger.info('Using only functions : '+str(benchmark))

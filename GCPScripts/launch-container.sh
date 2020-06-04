@@ -6,7 +6,11 @@
 #we use this script as launch-container nameofisntance
 #!/bin/bash
 #we use this script as launch-container nameofisntance
-gcloud beta compute instances create-with-container $1 \
+echo "Launching container using configuration file from folder: "
+echo $1
+echo "File: "
+echo $2
+gcloud beta compute instances create-with-container $2 \
   --zone=europe-west1-b \
   --machine-type=n1-standard-4 \
   --network-tier=PREMIUM \
@@ -14,11 +18,11 @@ gcloud beta compute instances create-with-container $1 \
   --metadata=google-logging-enabled=true \
   --service-account=script@hypercomp.iam.gserviceaccount.com \
   --scopes=https://www.googleapis.com/auth/cloud-platform \
-  --image=cos-stable-80-12739-91-0 \
+  --image=cos-stable-81-12871-96-0 \
   --image-project=cos-cloud \
   --container-privileged \
-  --container-env GCP_INSTANCE_NAME=$1 \
-  --container-env-file=./ExpGroupEnvSetup/$1.env  \
+  --container-env GCP_INSTANCE_NAME=$2 \
+  --container-env-file=$1/$2.env  \
   --container-image=eu.gcr.io/hypercomp/launcher:latest \
   --container-arg=runenv
 

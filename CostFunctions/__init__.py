@@ -389,6 +389,30 @@ set1 = [
     'Paviani',
     'RosenbrockModified',
     'ThreeHumpCamelBack']
+set1_non10 = [
+    'Ackley1N2','Ackley1N6',#'Ackley1N10',
+    'Ackley2',
+    'Ackley3',
+    'Adjiman',
+    'Alpine1N2', 'Alpine1N6', #'Alpine1N10',
+    'Alpine2',
+    'BartelsConn',
+    'Beale',
+    'BiggsEXP2',
+    'BiggsEXP3',
+    'BiggsEXP4',
+    'BiggsEXP5',
+    'BiggsEXP6',
+    'Bird',
+    'BraninRCOS',
+    'BraninRCOS2',
+    'Easom',
+    'Miele',
+    # 'Paviani',
+    'RosenbrockModified',
+    'ThreeHumpCamelBack']
+
+
 set2 =[
     'SixHumpCamelBack',
     'ChenBird',
@@ -416,6 +440,33 @@ set2 =[
     'DixonPriceN2', 'DixonPriceN6', 'DixonPriceN10',
     'Dolan']
 
+set2_non10 =[
+    'SixHumpCamelBack',
+    'ChenBird',
+    'ChenV',
+    'Bohachevsky1',
+    'Bohachevsky2',
+    'Bohachevsky3',
+    'Booth',
+    'BoxBettsQuadraticSum',
+    'Brent',
+    'BrownN2', 'BrownN6', #'BrownN10',
+    'Bunkin2',
+    'Bunkin4',
+    'Bunkin6',
+    'Chichinadze',
+    'ChungReynoldsN2','ChungReynoldsN6',#'ChungReynoldsN10',
+    'Colville',
+    'Corana',
+    'CosineMixtureN2', 'CosineMixtureN6', #'CosineMixtureN10',
+    'CrossInTray',
+    'CsendesN2','CsendesN6',#'CsendesN10',
+    'Cube',
+    'Damavandi',
+    'DeckkersAarts',
+    'DixonPriceN2', 'DixonPriceN6', #'DixonPriceN10',
+    'Dolan']
+
 set3=[
     'DeVilliersGlasser01',
     'DeVilliersGlasser02',
@@ -428,12 +479,12 @@ set3=[
     'Giunta',
     'GoldsteinPrice',
     'GriewankN2','GriewankN6','GriewankN10',
-    'GulfResearch',
+    # 'GulfResearch',
     'Hansen',
     'Hartman3',
     'Hartman6',
     'HelicalValley',
-    'Cola',
+    # 'Cola',
     'Himmelblau',
     'Hosaki',
     'JennrichSampson',
@@ -454,6 +505,46 @@ set3=[
     'Mishra10a',
     'Mishra10b',
     'Mishra11N2', 'Mishra11N6', 'Mishra11N10',
+    ]
+
+set3_non10=[
+    'DeVilliersGlasser01',
+    'DeVilliersGlasser02',
+    'ElAttarVidyasagarDutta',
+    'EggCrate',
+    'EggHolder',
+    'ExponentialN2','ExponentialN6',#'ExponentialN10',
+    'Exp2',
+    'FreudensteinRoth',
+    'Giunta',
+    'GoldsteinPrice',
+    'GriewankN2','GriewankN6',#'GriewankN10',
+    # 'GulfResearch',
+    'Hansen',
+    'Hartman3',
+    'Hartman6',
+    'HelicalValley',
+    # 'Cola',
+    'Himmelblau',
+    'Hosaki',
+    'JennrichSampson',
+    'Langerman',
+    'Keane',
+    'Leon',
+    'Matyas',
+    'McCormick',
+    'Mishra1N2', 'Mishra1N6', #'Mishra1N10',
+    'Mishra2N2', 'Mishra2N6', #'Mishra2N10',
+    'Mishra3',
+    'Mishra4',
+    'Mishra5',
+    'Mishra6',
+    'Mishra7N2', 'Mishra7N6', #'Mishra7N10',
+    'Mishra8',
+    'Mishra9',
+    'Mishra10a',
+    'Mishra10b',
+    'Mishra11N2', 'Mishra11N6', #'Mishra11N10',
     ]
 
 set4=[
@@ -486,6 +577,38 @@ set4=[
     'Schwefel2d4N2', 'Schwefel2d4N6', 'Schwefel2d4N10',
     'Schwefel2d6'
     ]
+
+set4_non10=[
+    'Parsopoulos',
+    'PenHolder',
+    'PathologicalN2', 'PathologicalN6', #'PathologicalN10',
+    'PinterN2', 'PinterN6', #'PinterN10',
+    'Periodic',
+    'PowellSingular',
+    'PowellSumN2', 'PowellSumN6', #'PowellSumN10',
+    'Price1',
+    'Price2',
+    'Price3',
+    'Price4',
+    'RotatedEllipse',
+    'QingN2', 'QingN6', #'QingN10',
+    'Quadratic',
+    'QuinticN2', 'QuinticN6', #'QuinticN10',
+    'QuarticN2', 'QuarticN6', #'QuarticN10',
+    'RotatedEllipse2',
+    'SalomonN2', 'SalomonN6', #'SalomonN10',
+    'SarganN2', 'SarganN6', #'SarganN10',
+    'Scahffer1',
+    'Scahffer2',
+    'Scahffer3',
+    'Scahffer4',
+    'SchumerSteiglitzN2', 'SchumerSteiglitzN6', #'SchumerSteiglitzN10',
+    'SchwefelN2', 'SchwefelN6', #'SchwefelN10',
+    'Schwefel1d2N2', 'Schwefel1d2N6', #'Schwefel1d2N10',
+    'Schwefel2d4N2', 'Schwefel2d4N6', #'Schwefel2d4N10',
+    'Schwefel2d6'
+    ]
+
 set5=[
     'Schwefel2d20N2', 'Schwefel2d20N6', 'Schwefel2d20N10',
     'Schwefel2d21N2', 'Schwefel2d21N6', 'Schwefel2d21N10',
@@ -509,6 +632,30 @@ set5=[
     'Trigonometric1N2', 'Trigonometric1N6', 'Trigonometric1N10',
     'Trigonometric2N2', 'Trigonometric2N6', 'Trigonometric2N10',
     ]
+set5_non10=[
+    'Schwefel2d20N2', 'Schwefel2d20N6', #'Schwefel2d20N10',
+    'Schwefel2d21N2', 'Schwefel2d21N6', #'Schwefel2d21N10',
+    'Schwefel2d22N2', 'Schwefel2d22N6', #'Schwefel2d22N10',
+    'Schwefel2d23N2', 'Schwefel2d23N6', #'Schwefel2d23N10',
+    'Schwefel2d26N2', 'Schwefel2d26N6', #'Schwefel2d26N10',
+    'Schwefel2d36',
+    'Shekel5',
+    'Shekel7',
+    'Shekel10',
+    'Shubert',
+    'SchafferF6',
+    'StrechedVSineWave2N',
+    'SumSquaresN2', 'SumSquaresN6', #'SumSquaresN10',
+    'StyblinkskiTang',
+    'Table1',
+    'Table2',
+    'Table3',
+    'TesttubeHolder',
+    'Trefethen',
+    'Trigonometric1N2', 'Trigonometric1N6', #'Trigonometric1N10',
+    'Trigonometric2N2', 'Trigonometric2N6', #'Trigonometric2N10',
+    ]
+
 set6= ['Tripod',
     'Ursem1',
     'Ursem3',
@@ -527,6 +674,27 @@ set6= ['Tripod',
     'XinSheYang2N2', 'XinSheYang2N6', 'XinSheYang2N10',
     'XinSheYang3N2', 'XinSheYang3N6', 'XinSheYang3N10',
     'ZakharovN2', 'ZakharovN6', 'ZakharovN10',
+    'Zettl',
+    'Zirilli']
+
+set6_non10= ['Tripod',
+    'Ursem1',
+    'Ursem3',
+    'Ursem4',
+    'UrsemWaves',
+    'VenterSobiezcczanskiSobieski',
+    'Watson',
+    'WayburnSeader1',
+    'WayburnSeader2',
+    'WayburnSeader3',
+    'WWavyN2', 'WWavyN6', #'WWavyN10',
+    'WeierstrassN2',
+    'WhitleyN2', 'WhitleyN6', #'WhitleyN10',
+    'Wolfe',
+    'XinSheYang1N2', 'XinSheYang1N6', #'XinSheYang1N10',
+    'XinSheYang2N2', 'XinSheYang2N6', #'XinSheYang2N10',
+    'XinSheYang3N2', 'XinSheYang3N6', #'XinSheYang3N10',
+    'ZakharovN2', 'ZakharovN6', #'ZakharovN10',
     'Zettl',
     'Zirilli']
 
@@ -570,6 +738,15 @@ bbob_no_n10 = [
     'SchaffersF7N2', 'SchaffersF7N6', #'SchaffersF7N10', #'SchaffersF7N20',
     'CompositeGriewankRosnbrockF8F2N2', 'CompositeGriewankRosnbrockF8F2N6', #'CompositeGriewankRosnbrockF8F2N10', #'CompositeGriewankRosnbrockF8F2N20',
     'LunacekBiRastriginN2', 'LunacekBiRastriginN6', #'LunacekBiRastriginN10', #'LunacekBiRastriginN20',
+]
+
+rerun_non10 = [
+    'RastriginN2', 'RastriginN6',
+]
+
+rerun = [
+    'RastriginN2', 'RastriginN6', 'RastriginN10', #corrected
+    'SphereN2',
 ]
 
 nobbob = [x for x in all_benchmarks if x not in bbob]

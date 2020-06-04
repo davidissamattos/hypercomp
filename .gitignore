@@ -21,3 +21,15 @@ packages_snippets.py
 CostFunctions/__pycache__/
 .DS_Store
 .gitignore
+/DataAnalysis/bayes_only_bbob/
+/DataAnalysis/no_bayesian_bbob/
+/DataAnalysis/no_bayesian_bbob_feval40_no_n10/
+/DataAnalysis/.Rhistory
+/DataAnalysis/bbob_nobayes.csv
+/DataAnalysis/Hypercomp-AlgorithmAnalysis.Rmd
+/DataAnalysis/no_bayesian_bbob_merged.csv
+/DataAnalysis/NoBayesianBBOB.nb.html
+/DataAnalysis/wrangling.nb.html
+/DataAnalysis/wrangling.R
+/DataAnalysis/wrangling.Rmd
+/DataAnalysis/bbob_bayes_no_smac.csv

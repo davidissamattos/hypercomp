@@ -40,14 +40,47 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'gcpcredentials.json'
 
 
 if __name__ == '__main__':
-    from CostFunctions.LinearSlope import LinearSlopeN2
-    func = LinearSlopeN2(functionProperties=LinearSlopeN2.functionProperties,maxfeval=100, sd=0)
-    print(func([-5,-5]),
-          func([-5, 5]),
-          func([5, -5]),
-          func([5, 5]))
-    print(func.functionProperties['optimalArms'])
+    from CostFunctions import all_benchmarks as bm
+    for cname in bm:
+        module = importlib.import_module('CostFunctions')
+        cl = getattr(module, cname)
+        # instantiating
+        obj = cl(functionProperties=cl.functionProperties,
+                 sd=0,
+                 maxfeval=1e4)
+        if obj.functionProperties['Ndimensions']>6:
+            print(obj.GetCostFunctionName())
 
+
+    # from CostFunctions.LinearSlope import LinearSlopeN2
+    # func = LinearSlopeN2(functionProperties=LinearSlopeN2.functionProperties,maxfeval=100, sd=0)
+    # print(func([-5,-5]),
+    #       func([-5, 5]),
+    #       func([5, -5]),
+    #       func([5, 5]))
+    # print(func.functionProperties['optimalArms'])
+
+
+    print('Testing the SMAC')
+    from Algorithms.SMAC import SMAC
+    # from Algorithms.BayesianOpt import  BayesOptEIRandom, BayesOptEILatin
+    #
+    # sim = Comparator(objFuncClass=ChenV,
+    #                  results_folder='data',
+    #                  filename='test.csv',
+    #                  sd=0.5,
+    #                  maxfeval=10,
+    #                  nsim=1,
+    #                  useGCP=False)
+    # sim.run_algorithm(BayesOptEIRandom)
+    # sim = Comparator(objFuncClass=ChenV,
+    #                  results_folder='data',
+    #                  filename='test.csv',
+    #                  sd=0.5,
+    #                  maxfeval=10,
+    #                  nsim=1,
+    #                  useGCP=False)
+    # sim.run_algorithm(BayesOptEILatin)
 
     # from CostFunctions import WeierstrassN2, WeierstrassN6, WeierstrassN10, WeierstrassN20
     # func = WeierstrassN2(functionProperties=WeierstrassN2.functionProperties,maxfeval=100, sd=0)
@@ -69,14 +102,7 @@ if __name__ == '__main__':
     #
     #
     #
-    # # sim = Comparator(objFuncClass=Easom,
-    # #                      results_folder='data',
-    # #                      filename = 'test.csv',
-    # #                      sd=0,
-    # #                      maxfeval=10,
-    # #                      nsim=1,
-    # #                  useGCP=True,
-    # #                  GCPbucketName='hypercomp-experiment-data')DeVilliersGlasser01
+
     #
     # func = SixHumpCamelBack(functionProperties=SixHumpCamelBack.functionProperties,maxfeval=100, sd=0)
     # print('Best ',[-0.0898, 0.7126],' ' ,func([-0.0898, 0.7126]))
@@ -98,7 +124,7 @@ if __name__ == '__main__':
     # logger.warning('My warning')
     # logger.critical('My critical')
 
-    from Algorithms.SMAC import SMAC
+
     from Algorithms.HpbandsterAlgorithms import hpbandsterHyperBand, hpbandsterBOHB
     # from Algorithms.Hyperopt import RandomSearch
 

@@ -16,6 +16,8 @@ __all__ = ['SMAC']
 class SMAC(Algorithm):
     """
     Implement the algorithms of the SMAC package
+    SMAC has some weirdness that prevents the CostFunction class to properly log, so we retrieve the information from the run history of SMAC
+    This trick is only working with version 0.11.1 and not with the aboves...
 
     Parameters from the super class to keep track
 
@@ -52,6 +54,7 @@ class SMAC(Algorithm):
                     raise TypeError('This algorithm doesnt accept categorical variables yet')
                 self.space.append(spc)
                 i = i + 1
+
             self.cs.add_hyperparameters(self.space)
 
             # # Scenario object
@@ -66,6 +69,7 @@ class SMAC(Algorithm):
                 self.objective.GetCostFunctionName()))
             pass
 
+
     def optimize(self):
         """
         The main optimization procedure
@@ -78,12 +82,17 @@ class SMAC(Algorithm):
         #it kind of only uses a deep copy of the objective and reinstantiate it so the logging does not work well
         #So I am retrivieving these values after occuring and re-assembling the objective function
         try:
+            # print('Space: ', self.scenario)
+            # print('Objective function: ', self.objective)
+
             smac = SMAC4HPO(scenario=self.scenario,
                             tae_runner=self.objective)
             xopt = smac.optimize()
+            # print(xopt)
+
             self.objective.outputValues = smac.get_X_y()[1].tolist()
             self.objective.requestedArms = smac.get_X_y()[0].tolist()
-            self.objective._nfeval = len(self.objective.outputValues)
+            self.objective.nfeval = len(self.objective.outputValues)
             best_arm = convertToArray(xopt)
             success = True
         except:

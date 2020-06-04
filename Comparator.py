@@ -8,7 +8,7 @@ from tqdm import tqdm
 #GoogleCloud bucket
 from google.cloud import storage
 # say where your private key to google cloud exists
-from Algorithms import all_algorithms, niapy_random_search, no_bayesian, bayes_only, mlghoo, hpbandster
+from Algorithms import all_algorithms, niapy_random_search, no_bayesian, bayes_only, mlghoo, hpbandster, smac, tpe, others
 
 class Comparator():
     """
@@ -81,6 +81,8 @@ class Comparator():
             alg_to_run = mlghoo
         elif self.algorithmgroup == 'bayes_only':
             alg_to_run = bayes_only
+        elif self.algorithmgroup == 'smac':
+            alg_to_run = smac
         elif self.algorithmgroup == 'hpbandster':
             alg_to_run = hpbandster
         else:
