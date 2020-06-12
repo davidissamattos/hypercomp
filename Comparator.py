@@ -8,7 +8,7 @@ from tqdm import tqdm
 #GoogleCloud bucket
 from google.cloud import storage
 # say where your private key to google cloud exists
-from Algorithms import all_algorithms, niapy_random_search, no_bayesian, bayes_only, mlghoo, hpbandster, smac, tpe, others
+from Algorithms import all_algorithms, niapy_random_search, no_bayesian, bayes_only, mlghoo, hpbandster, smac, tpe, others, statscomp
 
 class Comparator():
     """
@@ -30,7 +30,8 @@ class Comparator():
                  GCPbucketName=None,
                  timeout_min=15,
                  nfevalbydimensions=False,
-                 algorithmgroup='all'):
+                 algorithmgroup='all',
+                 useProcess=False):
 
         self.objFuncClass = objFuncClass
         #standard deviation
@@ -52,6 +53,7 @@ class Comparator():
             self.timeout = int(timeout_min * 60)
         else:
             self.timeout = int(15 * 60)
+        self.useProcess=useProcess
         logger.info('Using a timeout of '+ str(self.timeout)+ ' seconds per algorithm')
 
         if self.useGCP:
@@ -85,6 +87,8 @@ class Comparator():
             alg_to_run = smac
         elif self.algorithmgroup == 'hpbandster':
             alg_to_run = hpbandster
+        elif self.algorithmgroup == 'statscomp':
+            alg_to_run = statscomp
         else:
             raise ValueError('There is no algorithm class called: ' + self.algorithmgroup)
         #tqdm is just to create a progress bar
@@ -132,7 +136,8 @@ class Comparator():
                          maxfeval=algo_maxfeval)
 
 
-        result = algo.run(timeout=self.timeout)
+        result = algo.run(timeout=self.timeout, useProcess=self.useProcess)
+
         return result
 
     def cleanUp(self):

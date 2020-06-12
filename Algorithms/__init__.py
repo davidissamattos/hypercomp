@@ -42,6 +42,15 @@ niapy = [ 'NiaPyABC',
             'NiaPySimulatedAnnealing']
 
 
+statscomp = ['NiaPyNelderMead',
+            'NiaPyPSO',
+            'NiaPySimulatedAnnealing',
+            'NiaPyCuckooSearch',
+            'NiaPyDifferentialEvolution',
+            'RandomSearch',
+            'RandomSearch2',
+            'CMAES']
+
 niapy_random_search = niapy + random_search
 
 bayes_only = hpbandster + smac + bayesian

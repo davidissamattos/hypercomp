@@ -25,6 +25,10 @@ class CostFunctions(ABC):
         self.requestedArms = []
         # Here we log all the output values with noise that the function gives
         self.outputValues = []
+        self.solve_1 = 0
+        self.solve_1e1 = 0
+        self.solve_1e3 = 0
+        self.solve_1e6 = 0
 
     # Needs to be implemented the function without noise
     @abstractmethod
@@ -36,12 +40,12 @@ class CostFunctions(ABC):
         """
         pass
 
-    def eval(self, x):
+    def eval(self, y):
         try:
-            self.requestedArms.append(x)
-            nonoise = self.func(x)
-            value = np.random.normal(loc=nonoise, scale=self.sd, size=1)[0]
-            self.outputValues.append(value)
+            if self.sd > 0:
+                value = np.random.normal(loc=y, scale=self.sd, size=1)[0]
+            else:
+                value = y
             return value
         except:
             raise ValueError
@@ -58,10 +62,16 @@ class CostFunctions(ABC):
             # Verify maximum number of evaluations
             if self.nfeval > self.maxfeval:
                 logger.debug('Max iterations were achieved')
-                # raise ValueError("Max iterations allowed is over")
             self.nfeval = 1 + self.nfeval
             # print('Final Nfeval: ', self.nfeval)
-            return self.eval(xx)
+            #y is the function without noise
+            y = self.func(xx)
+            self.requestedArms.append(xx)
+            self.EarlySolve(y) #see if it was solved
+            result = self.eval(y) #compute result with noise
+            self.outputValues.append(result)
+            # print("End here")
+            return result
         except:
             raise ValueError
 
@@ -69,6 +79,57 @@ class CostFunctions(ABC):
         self.maxfeval = k*self.functionProperties['Ndimensions']
 
     # From this point we verify all the metrics that we want to investigate
+    def EarlySolve(self,y):
+        diff = y - self.minimumValue
+        if diff <= 1.0 and self.solve_1==0:
+            self.solve_1 = self.nfeval
+        if diff <= 1e-1 and self.solve_1e1 == 0:
+            self.solve_1e1 = self.nfeval
+        if diff<=1e-3 and self.solve_1e3==0:
+            self.solve_1e3 = self.nfeval
+        if diff <= 1e-6 and self.solve_1e6 == 0:
+            self.solve_1e6 = self.nfeval
+        return
+
+    def GetSolveEarly1(self):
+        if self.solve_1==0:
+            return NAN
+        else:
+            return self.solve_1
+
+    def GetSolveEarly1e1(self):
+        if self.solve_1e1==0:
+            return NAN
+        else:
+            return self.solve_1e1
+
+    def GetSolveEarly1e3(self):
+        if self.solve_1e3 == 0:
+            return NAN
+        else:
+            return self.solve_1e3
+
+    def GetSolveEarly1e6(self):
+        if self.solve_1e6 == 0:
+            return NAN
+        else:
+            return self.solve_1e6
+
+    def SolveAtPrecision(self,best_arm, precision):
+        try:
+            reward_diff = np.abs(self.minimumValue - self.func(best_arm))
+            # logger.debug('Real min: ' + str(self.minimumValue) + ' obtainded value: ' + str(self.func(best_arm)))
+            if type(reward_diff) is np.ndarray:
+                reward_diff=np.float64(reward_diff)
+        except:
+            logger.warning('Error calculating the precision for: ' + str(self.GetCostFunctionName()))
+            reward_diff = NAN
+
+        if reward_diff < precision:
+            return True
+        else:
+            return False
+
     def GetRegret(self):
         """
         Here we calculate the absolute value of the regret of the optimization process
@@ -120,7 +181,7 @@ class CostFunctions(ABC):
         """
         try:
             reward_diff = np.abs(self.minimumValue - self.func(best_arm))
-            logger.debug('Real min: ' + str(self.minimumValue) + ' obtainded value: ' + str(self.func(best_arm)))
+            # logger.debug('Real min: ' + str(self.minimumValue) + ' obtainded value: ' + str(self.func(best_arm)))
             if type(reward_diff) is np.ndarray:
                 reward_diff=np.float64(reward_diff)
         except:
@@ -174,6 +235,8 @@ class CostFunctions(ABC):
 
 
 
+
+
     def GenerateInfo(self, best_arm, timetocomplete, algorithm_name, success=True):
         """
         In this function we create a dictionary logging all the interesting things we want from this experimental run
@@ -201,7 +264,15 @@ class CostFunctions(ABC):
                 'SD': self.GetSD(),
                 'MaxFeval': self.GetMaxFeval(),
                 'MaxFevalPerDimensions': self.GetMaxFevalPerDimensions(),
-                'FevalPerDimensions': self.GetFevalPerDimensions()
+                'FevalPerDimensions': self.GetFevalPerDimensions(),
+                'SolveAt1': self.SolveAtPrecision(best_arm=best_arm,  precision=1.0),
+                'SolveAt1e-1': self.SolveAtPrecision(best_arm=best_arm,  precision=1e-1),
+                'SolveAt1e-3': self.SolveAtPrecision(best_arm=best_arm,  precision=1e-3),
+                'SolveAt1e-6': self.SolveAtPrecision(best_arm=best_arm,  precision=1e-6),
+                'SolveEarlierAt1': self.GetSolveEarly1(),
+                'SolveEarlierAt1e-1':self.GetSolveEarly1e1(),
+                'SolveEarlierAt1e-3': self.GetSolveEarly1e3(),
+                'SolveEarlierAt1e-6': self.GetSolveEarly1e6()
             }
             logger.info('Results for ' + str(algorithm_name) + ' with cost function ' + str(
                 self.GetCostFunctionName()) + ' were succesfully created')

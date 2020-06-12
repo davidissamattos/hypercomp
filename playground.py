@@ -40,16 +40,44 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'gcpcredentials.json'
 
 
 if __name__ == '__main__':
-    from CostFunctions import all_benchmarks as bm
-    for cname in bm:
-        module = importlib.import_module('CostFunctions')
-        cl = getattr(module, cname)
-        # instantiating
-        obj = cl(functionProperties=cl.functionProperties,
-                 sd=0,
-                 maxfeval=1e4)
-        if obj.functionProperties['Ndimensions']>6:
-            print(obj.GetCostFunctionName())
+    # from CostFunctions import all_benchmarks as bm
+    # import random
+    # print(random.sample(bm, 50))
+
+    from Algorithms.NiaPy import NiaPyABC
+    from Algorithms.RandomXN import RandomSearch2
+    sim = Comparator(objFuncClass=SharpRidgeN6,
+                     results_folder='data',
+                     filename='testABC.csv',
+                     sd=0.0,
+                     maxfeval=100000,
+                     maxfevalBydimensions=True,
+                     nsim=1,
+                     useGCP=False,
+                     useProcess=False)
+
+    print(sim.run_algorithm(NiaPyABC))
+
+    # sim2 = Comparator(objFuncClass=ChenV,
+    #                  results_folder='data',
+    #                  filename='testRandomSearch2.csv',
+    #                  sd=0.0,
+    #                  maxfeval=100000,
+    #                  maxfevalBydimensions=False,
+    #                  nsim=1,
+    #                  useGCP=False)
+    # print(sim2.run_algorithm(RandomSearch2))
+
+
+    # for cname in bm:
+    #     module = importlib.import_module('CostFunctions')
+    #     cl = getattr(module, cname)
+    #     # instantiating
+    #     obj = cl(functionProperties=cl.functionProperties,
+    #              sd=0,
+    #              maxfeval=1e4)
+    #     if obj.functionProperties['Ndimensions']>6:
+    #         print(obj.GetCostFunctionName())
 
 
     # from CostFunctions.LinearSlope import LinearSlopeN2
@@ -61,7 +89,7 @@ if __name__ == '__main__':
     # print(func.functionProperties['optimalArms'])
 
 
-    print('Testing the SMAC')
+    # print('Testing the SMAC')
     from Algorithms.SMAC import SMAC
     # from Algorithms.BayesianOpt import  BayesOptEIRandom, BayesOptEILatin
     #

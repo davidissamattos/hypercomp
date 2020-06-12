@@ -9,12 +9,28 @@ import colorlog
 
 from tqdm import tqdm
 
-from CostFunctions import all_benchmarks, bbob, bbob_no_n10, smalltest, nobbob, set1, set1_non10, set2, set2_non10,  set3, set3_non10, set4, set4_non10, set5, set5_non10, set6, set6_non10, rerun, rerun_non10
+from CostFunctions import all_benchmarks, bbob, bbob_no_n10, smalltest, nobbob, set1, set1_non10, set2, set2_non10,  set3, set3_non10, set4, set4_non10, set5, set5_non10, set6, set6_non10, rerun, rerun_non10, random_sample_50
 from Comparator import *
 
 if sys.version_info[0] < 3:
     raise Exception("Must be using Python 3")
 
+
+
+
+
+
+# some notes
+# For large dimension spaces the optimzation in separate processs can hang
+#  In the file Algorithms.py under the function run you can comment if you want to run in separate process or not
+# Note that running in a single process we loose the timeout function
+#
+#
+#
+#
+#
+#
+#
 
 def setLogLevels(loglevel, usegcp):
     # if usegcp:
@@ -83,7 +99,7 @@ def setLogLevels(loglevel, usegcp):
 
 #Main function that is called
 def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
-        funcrange_max, func, timeout, loglevel,nfevalbydimensions,algorithmgroup):
+        funcrange_max, func, timeout, loglevel,nfevalbydimensions,algorithmgroup, useProcess):
     # configuring log level
     # levels per file
     if usegcp:
@@ -139,6 +155,8 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
             benchmark = rerun
         elif func == 'rerun_non10':
             benchmark = rerun_non10
+        elif func == 'random_sample_50':
+            benchmark = random_sample_50
         elif func in all_benchmarks:
             benchmark = [func]
             logger.info('Using only functions : '+str(benchmark))
@@ -180,7 +198,8 @@ def run(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
                          GCPbucketName=bucketname,
                          timeout_min=timeout,
                          nfevalbydimensions=nfevalbydimensions,
-                         algorithmgroup=algorithmgroup)
+                         algorithmgroup=algorithmgroup,
+                         useProcess=useProcess)
         sim.run()
 
 
@@ -215,8 +234,9 @@ def hypercomp():
               help='Specify if the number of function evaluations will depend on the dimensions. If True the maxfeval will be maxfeval*Dimensions')
 @click.option('--algorithmgroup', default='all', required=False, type=str,
               help='Specify the group of algorithms to run. Options all, niapy, etc..')
+@click.option('--useprocess', default=False, required=False, type=bool, help='each algorithm run in a separte process with timeout if true. Use only for very few feval per dimension')
 def runcli(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
-            funcrange_max, func, timeout, loglevel,nfevalbydimensions, algorithmgroup):
+            funcrange_max, func, timeout, loglevel,nfevalbydimensions, algorithmgroup,useprocess):
     run(sd=sd,
         maxfeval=maxfeval,
         path=path,
@@ -229,7 +249,8 @@ def runcli(sd, maxfeval, path, nsim, usegcp, bucketname, funcrange_min,
         timeout=timeout,
         loglevel=loglevel,
         nfevalbydimensions=nfevalbydimensions,
-        algorithmgroup=algorithmgroup)
+        algorithmgroup=algorithmgroup,
+        useProcess=useprocess)
 
 
 # this we are reading environmental variables --> for running with docker without passing this much arguments
@@ -311,6 +332,10 @@ def runenv():
     if bucketname is not None:
         bucketname = str(bucketname)
 
+    useProcess = os.environ.get('USE_PROCESS')
+    if useProcess is not None:
+        useProcess = bool(useProcess)
+
     simproperties={
                 'sd' : sd,
                 'maxfeval' : maxfeval,
@@ -324,7 +349,8 @@ def runenv():
                 'timeout' : timeout,
                 'loglevel' : loglevel,
                 'nfevalbydimensions' : nfevalbydimensions,
-                'algorithmgroup' : algorithmgroup}
+                'algorithmgroup' : algorithmgroup,
+                'useprocess': useProcess}
 
     print('Running with simulator with properties: ',
           simproperties)
@@ -341,7 +367,8 @@ def runenv():
         timeout=timeout,
         loglevel=loglevel,
         nfevalbydimensions=nfevalbydimensions,
-        algorithmgroup=algorithmgroup)
+        algorithmgroup=algorithmgroup,
+        useProcess=useProcess)
 
 
 

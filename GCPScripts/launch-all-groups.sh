@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+#### NEED TO UPDATE ALL THESE GROUPS ENVIRONMENT WITH
+#USE_PROCESS=true
+# so it can actually run
+
 # BBOB
 ## no bayesian bbob
 #./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/bbob/no_bayesian_bbob bbob1
@@ -265,3 +270,16 @@
 #./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/set6/bayes_only_set6 set6bayes6
 #./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/set6/bayes_only_set6 set6bayes7
 #./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/set6/bayes_only_set6 set6bayes8
+
+
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp1
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp1noise
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp2
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp2noise
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp3
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp3noise
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp4
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp4noise
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp5
+./GCPScripts/launch-container.sh ./ExpGroupEnvSetup/statscomp statscomp5noise
+

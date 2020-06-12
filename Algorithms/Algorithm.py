@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 logger.propagate = False
 from abc import ABC, abstractmethod
 from multiprocessing import Process, Queue
+import time
 
 
 class Algorithm(ABC):
@@ -24,25 +25,35 @@ class Algorithm(ABC):
             self.algorithm_name= algorithm_name
 
 
-        def run(self,timeout):
+        def run(self,timeout,useProcess):
             """
             Optimize the algorithm
             """
 
             self.assemblespace()
+            # print("Start here")
             start = timer()
-            if self.algorithm_name in['BOHB', 'HyperBand']:
-                best_arm, success  = self.optimizeInSeparateProcess(timeout=timeout)
+
+            if useProcess:
+
+                if self.algorithm_name in['BOHB', 'HyperBand']:
+                    best_arm, success  = self.optimizeInSeparateProcess(timeout=timeout)
+                else:
+                    #For large spaces the processes break, so that is why we will run everything synchronized
+                    best_arm, success, self.objective = self.optimizeInSeparateProcess(timeout=timeout)
             else:
-                best_arm, success, self.objective = self.optimizeInSeparateProcess(timeout=timeout)
+                best_arm, success, self.objective = self.optimize()
 
             end = timer()
             timetocomplete = end - start
+            # print("Finished here ", timetocomplete)
             result = self.objective.GenerateInfo(best_arm=best_arm,
                                                  timetocomplete=timetocomplete,
                                                  algorithm_name=self.algorithm_name,
                                                  success=success)
             return result
+
+
 
         def optimizeProcess(self, queue):
             #Because BOHB and Hyperband are not working this way
